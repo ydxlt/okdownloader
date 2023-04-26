@@ -1,0 +1,27 @@
+[versions]
+room = "2.5.1"
+commonsCodec = "1.15"
+okhttp = "4.10.0"
+okio = "3.3.0"
+androidGradlePlugin = "7.4.1"
+kotlin = "1.8.0"
+junit = "4.13.2"
+androidTestJunitExt = "1.1.3"
+androidTestEspresso = "3.4.0"
+
+[libraries]
+commons-codec = { group = "commons-codec", name = "commons-codec", version.ref = "commonsCodec" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
+test-junit = { group = "junit", name = "junit", version.ref = "junit" }
+android-test-junit-ext = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+android-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidTestEspresso" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

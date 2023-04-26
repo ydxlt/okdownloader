@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # okdownloader
 
 
@@ -90,3 +91,17 @@ For open source projects, say how it is licensed.
 
 ## Project status
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+// 1. 断点续传 - done
+// 2. 文件校验 - done
+// 3. 同步/异步下载 - done
+// 4. 任务取消 - done
+// 5. 任务回调/任务订阅/全局任务订阅 - done
+// 6. 任务优先级 - done
+// 7. 任务重试 - done
+// 8. 跨平台 - done
+// 9. Android持久化
+// 10. 网络监听
+// 11. 磁盘空间不足
+// 12. 内存下载和文件下载模式
+// 13. 下载限速
+// 14. Android前台服务下载模式
