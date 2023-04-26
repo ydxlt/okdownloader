@@ -1,107 +1,167 @@
-<<<<<<< HEAD
-# okdownloader
+okdownloader
+========
 
+A downloader for Android and Java.
 
+Features
+--------
 
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.com/ydxlt/okdownloader.git
-git branch -M main
-git push -uf origin main
+Synchronous download
+-------------
+```java
+val downloader = Downloader.Builder().build()
+val request = Download.Request.Builder()
+    .url(url)
+    .path(path)
+    .build()
+downloader.newCall(request).execute()
 ```
 
-## Integrate with your tools
+Asynchronous download
+---------------------
+```java
+val downloader = Downloader.Builder().build()
+val request = Download.Request.Builder()
+    .url(url)
+    .path(path)
+    .build()
+downloader.newCall(request).enqueue()
+```
 
-- [ ] [Set up project integrations](https://gitlab.com/ydxlt/okdownloader/-/settings/integrations)
+With listener
+-------------
+```java
+downloader.newCall(request).enqueue(object : Download.Callback {
+    // ...
+    override fun onSuccess(call: Download.Call, response: Download.Response) {
+    // do your job
+    }
 
-## Collaborate with your team
+    override fun onFailure(call: Download.Call, response: Download.Response) {
+        // do your job
+    }
+})
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+Priority
+--------
+```java
+val request = Download.Request.Builder()
+    .priority(Download.Priority.HIGH)
+    .url(url)
+    .path(path)
+    .build()
+```
 
-## Test and Deploy
+Retry
+-----
+```java
+val request = Download.Request.Builder()
+    .retry(3)
+    .url(url)
+    .path(path)
+    .build()
+```
 
-Use the built-in continuous integration in GitLab.
+Global listener
+-----
+```java
+val downloader = Downloader.Builder().build()
+val subscriber = object : Download.Subscriber {
+    // ...
+    override fun onSuccess(call: Download.Call, response: Download.Response) {
+    // do your job
+    }
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+    override fun onFailure(call: Download.Call, response: Download.Response) {
+    // do your job
+    }
+}
+downloader.subscribe(subscriber)
+downloader.unsubscribe(subscriber)
+```
 
-***
+Global listener with url
+------------------------
+```java
+val downloader = Downloader.Builder().build()
+val subscriber = object : Download.Subscriber {
+    // ...
+    override fun onSuccess(call: Download.Call, response: Download.Response) {
+    // do your job
+    }
 
-# Editing this README
+    override fun onFailure(call: Download.Call, response: Download.Response) {
+    // do your job
+    }
+}
+downloader.subscribe(url, subscriber)
+downloader.unsubscribe(url, subscriber)
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+Specifies the thread callback
+-----------------------------
+```java
+```java
+val request = Download.Request.Builder()
+    .callbackOn(CallbackExecutor.SERIAL)
+    .url(url)
+    .path(path)
+    .build()
+```
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Android main thread callback
+-----------------------------
+```java
+val request = Download.Request.Builder()
+    .callbackOn(CallbackExecutor.Main)
+    .url(url)
+    .path(path)
+    .build()
+```
 
-## Name
-Choose a self-explaining name for your project.
+Android specifies network
+-------------------------
+```java
+val request = DownloadRequest.Builder()
+    .networkOn(DownloadRequest.NETWORK_WIFI or DownloadRequest.NETWORK_DATA)
+    .url(url)
+    .path(path)
+    .build()
+```
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+How to expand
+-------------
+```java
+val downloader = Downloader.Builder()
+    .addInterceptor(CustomInterceptor())
+    .build()
+```
+or 
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+Declare your interceptor using SPI
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+MATA-INF/services/com.billbook.lib.Interceptor
+```java
+com.example.CustomInterceptor1
+com.example.CustomInterceptor2
+com.example.CustomInterceptor3
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+License
+=======
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+    Copyright 2013 Square, Inc.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+       http://www.apache.org/licenses/LICENSE-2.0
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
-// 1. 断点续传 - done
-// 2. 文件校验 - done
-// 3. 同步/异步下载 - done
-// 4. 任务取消 - done
-// 5. 任务回调/任务订阅/全局任务订阅 - done
-// 6. 任务优先级 - done
-// 7. 任务重试 - done
-// 8. 跨平台 - done
-// 9. Android持久化
-// 10. 网络监听
-// 11. 磁盘空间不足
-// 12. 内存下载和文件下载模式
-// 13. 下载限速
-// 14. Android前台服务下载模式
