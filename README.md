@@ -28,8 +28,8 @@ val request = Download.Request.Builder()
 downloader.newCall(request).enqueue()
 ```
 
-With listener
--------------
+Callback
+--------
 ```java
 downloader.newCall(request).enqueue(object : Download.Callback {
     // ...
@@ -63,7 +63,7 @@ val request = Download.Request.Builder()
     .build()
 ```
 
-Global listener
+Global callback
 -----
 ```java
 val downloader = Downloader.Builder().build()
@@ -81,27 +81,26 @@ downloader.subscribe(subscriber)
 downloader.unsubscribe(subscriber)
 ```
 
-Global listener with url
+Global callback with url
 ------------------------
 ```java
 val downloader = Downloader.Builder().build()
 val subscriber = object : Download.Subscriber {
     // ...
     override fun onSuccess(call: Download.Call, response: Download.Response) {
-    // do your job
+        // do your job
     }
 
     override fun onFailure(call: Download.Call, response: Download.Response) {
-    // do your job
+        // do your job
     }
 }
 downloader.subscribe(url, subscriber)
 downloader.unsubscribe(url, subscriber)
 ```
 
-Specifies the thread callback
+Specifies thread callback
 -----------------------------
-```java
 ```java
 val request = Download.Request.Builder()
     .callbackOn(CallbackExecutor.SERIAL)
@@ -139,9 +138,8 @@ val downloader = Downloader.Builder()
 ```
 or 
 
-Declare your interceptor using SPI
+Declare your interceptor using SPI,In META-INF/services/com.billbook.lib.Interceptor
 
-MATA-INF/services/com.billbook.lib.Interceptor
 ```java
 com.example.CustomInterceptor1
 com.example.CustomInterceptor2
