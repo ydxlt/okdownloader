@@ -12,11 +12,11 @@ abstract class EventListener {
 
     }
 
-    open fun callSuccess(call: Download.Call) {
+    open fun callSuccess(call: Download.Call, response: Download.Response) {
 
     }
 
-    open fun callFailed(call: Download.Call) {
+    open fun callFailed(call: Download.Call, response: Download.Response) {
 
     }
 

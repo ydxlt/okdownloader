@@ -33,10 +33,10 @@ internal class DefaultDownloadCall(
             val response = getResponseWithInterceptorChain(callback)
             if (response.isSuccessful()) {
                 callback.onSuccess(this, response)
-                eventListener.callSuccess(this)
+                eventListener.callSuccess(this, response)
             } else {
                 callback.onFailure(this, response)
-                eventListener.callFailed(this)
+                eventListener.callFailed(this, response)
             }
             return response
         } finally {
@@ -82,6 +82,10 @@ internal class DefaultDownloadCall(
         return this.canceled.get()
     }
 
+    override fun toString(): String {
+        return "DefaultDownloadCall(request=$request)"
+    }
+
     internal inner class AsyncCall(
         private val callback: Download.Callback,
         private val priority: Download.Priority
@@ -97,10 +101,10 @@ internal class DefaultDownloadCall(
                 val response = getResponseWithInterceptorChain(callback)
                 if (response.isSuccessful()) {
                     callback.onSuccess(call, response)
-                    eventListener.callSuccess(call)
+                    eventListener.callSuccess(call, response)
                 } else {
                     callback.onFailure(call, response)
-                    eventListener.callFailed(call)
+                    eventListener.callFailed(call, response)
                 }
             } finally {
                 eventListener.callEnd(call)
@@ -130,5 +134,7 @@ internal class DefaultDownloadCall(
             ServiceLoader.load(Interceptor::class.java).toList()
         }
     }
+
+
 }
 

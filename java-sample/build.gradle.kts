@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
+    application
 }
 
 java {
@@ -9,7 +10,5 @@ java {
 }
 
 dependencies {
-    api(libs.okhttp)
-    implementation(libs.commons.codec)
-    implementation(libs.okio)
+    implementation(project(path = ":okdownloader"))
 }

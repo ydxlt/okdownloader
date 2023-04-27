@@ -155,7 +155,7 @@ internal class ExceptionInterceptor : Interceptor {
     }
 
     private inline fun Download.Response.Builder.messageWith(t: Throwable): Download.Response.Builder {
-        return apply { t.message?.let { message(it) } }
+        return apply { message(t.toString()) }
     }
 }
 

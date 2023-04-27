@@ -226,9 +226,10 @@ interface Named {
     val name: String
 }
 
-interface CallbackExecutor : Executor, Named {
+abstract class CallbackExecutor : Executor, Named {
+
     companion object {
-        val UNCONFINED = object : CallbackExecutor {
+        val UNCONFINED = object : CallbackExecutor() {
             override val name: String get() = "UNCONFINED"
 
             override fun execute(command: Runnable) {
@@ -236,7 +237,7 @@ interface CallbackExecutor : Executor, Named {
             }
         }
 
-        val SERIAL = object : CallbackExecutor {
+        val SERIAL = object : CallbackExecutor() {
             override val name: String get() = "SERIAL"
 
             private val executor by lazy { Executors.newSingleThreadExecutor() }
@@ -245,5 +246,9 @@ interface CallbackExecutor : Executor, Named {
                 executor.execute(command)
             }
         }
+    }
+
+    override fun toString(): String {
+        return "CallbackExecutor(name='$name')"
     }
 }
