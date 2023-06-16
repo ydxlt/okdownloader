@@ -40,7 +40,7 @@ open class DownloadRequest protected constructor(
             this.url = url
         }
 
-        override fun path(path: String): Builder = apply {
+        override fun into(path: String): Builder = apply {
             this.path = path
         }
 
