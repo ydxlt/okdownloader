@@ -123,8 +123,7 @@ class Downloader internal constructor(
     private class CallWrapper(
         private val call: Download.Call,
         private val subscriber: Download.Subscriber
-    ) :
-        Download.Call by call {
+    ) : Download.Call by call {
 
         override fun execute(callback: Download.Callback): Download.Response {
             return call.execute(EventDispatcher(callback, subscriber))
