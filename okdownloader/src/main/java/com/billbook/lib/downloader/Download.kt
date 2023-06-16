@@ -66,8 +66,12 @@ interface Download {
                 this.size = size
             }
 
-            open fun path(path: String): Builder = apply {
+            open fun into(path: String): Builder = apply {
                 this.path = path
+            }
+
+            open fun into(file: File): Builder = apply {
+                this.path = file.absolutePath
             }
 
             open fun retry(retry: Int): Builder = apply {
