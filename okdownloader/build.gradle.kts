@@ -8,6 +8,8 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+apply(from = "../maven_publish.gradle")
+
 dependencies {
     api(libs.okhttp)
     implementation(libs.commons.codec)

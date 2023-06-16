@@ -29,6 +29,8 @@ android {
     }
 }
 
+apply(from = "../maven_publish.gradle")
+
 dependencies {
     testImplementation(libs.test.junit)
     androidTestImplementation(libs.android.test.junit.ext)
