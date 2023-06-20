@@ -20,7 +20,7 @@ internal abstract class DownloadDatabase : RoomDatabase() {
         private var INSTANCE: DownloadDatabase? = null
 
         fun getInstance(context: Context) = INSTANCE ?: synchronized(this) {
-            INSTANCE ?: Room.databaseBuilder(context, DownloadDatabase::class.java, "downloader.db")
+            INSTANCE ?: Room.databaseBuilder(context, DownloadDatabase::class.java, "ok_downloader.db")
                 .build().also { INSTANCE = it }
         }
     }
