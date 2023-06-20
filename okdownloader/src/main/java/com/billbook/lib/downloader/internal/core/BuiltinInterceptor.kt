@@ -69,25 +69,24 @@ internal class VerifierInterceptor : Interceptor {
 internal class SynchronousInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Download.Response {
         val request = chain.request()
-        val (urlLock, pathLock) = synchronized(sLock) {
-            sUrlLocks.getOrPut(request.url) { request.url } to sPathLocks.getOrPut(request.path) { request.path }
+        val (urlLock, pathLock) = synchronized(SynchronousInterceptor::class) {
+            sUrlLocks.getOrPut(request.url) { Any() } to sFileLock.getOrPut(request.path) { Any() }
         }
         return synchronized(pathLock) {
             synchronized(urlLock) {
                 chain.proceed(chain.request())
             }
         }.also {
-            synchronized(sLock) {
-                sUrlLocks.remove(request.url)
-                sPathLocks.remove(request.url)
+            synchronized(SynchronousInterceptor::class) {
+                sUrlLocks -= request.url
+                sFileLock -= request.path
             }
         }
     }
 
     companion object {
-        private val sLock = Any()
-        private val sUrlLocks = mutableMapOf<String, String>()
-        private val sPathLocks = mutableMapOf<String, String>()
+        private val sUrlLocks = mutableMapOf<String, Any>()
+        private val sFileLock = mutableMapOf<String, Any>()
     }
 }
 
