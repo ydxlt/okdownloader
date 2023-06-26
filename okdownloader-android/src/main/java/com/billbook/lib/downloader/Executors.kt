@@ -6,7 +6,7 @@ import android.os.Looper
 /**
  * @author xluotong@gmail.com
  */
-private val MainThreadExecutor: CallbackExecutor = object : CallbackExecutor() {
+private val MainThreadExecutor: CallbackExecutor = object : CallbackExecutor {
 
     override val name: String get() = "Main"
 
