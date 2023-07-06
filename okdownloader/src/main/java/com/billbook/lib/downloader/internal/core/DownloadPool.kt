@@ -5,7 +5,10 @@ import com.billbook.lib.downloader.EventListener
 import java.util.*
 import java.util.concurrent.ExecutorService
 
-internal class DownloadPool(private val executorService: ExecutorService, private val idleCallback: Runnable?) {
+internal class DownloadPool(
+    private val executorService: ExecutorService,
+    private val idleCallback: Runnable?
+) {
 
     private val readyAsyncCalls = PriorityQueue<DefaultDownloadCall.AsyncCall>()
     private val runningAsyncCalls = ArrayDeque<DefaultDownloadCall.AsyncCall>()
@@ -96,6 +99,12 @@ internal class DownloadPool(private val executorService: ExecutorService, privat
         finished(runningAsyncCalls, call)
     }
 
+    @Synchronized
+    fun cancelAll() {
+        runningAsyncCalls.forEach { it.call.cancel() }
+        runningSyncCalls.forEach { it.cancel() }
+    }
+
     private fun <T> finished(calls: Deque<T>, call: T) {
         val idleCallback: Runnable?
         synchronized(this) {
@@ -104,7 +113,6 @@ internal class DownloadPool(private val executorService: ExecutorService, privat
         }
 
         val isRunning = promoteAndExecute()
-
         if (!isRunning && idleCallback != null) {
             idleCallback.run()
         }

@@ -50,10 +50,10 @@ internal class VerifierInterceptor : Interceptor {
         val response = chain.proceed(request)
         if (!response.isSuccessful()) return response
         chain.callback().onChecking(chain.call())
-        if (!destFile.exists()) {
+        if (destFile.exists().not()) {
             throw DownloadException(ErrorCode.VERIFY_FILE_NOT_EXISTS, "File not exists")
         }
-        if (!destFile.isFile) {
+        if (destFile.isFile.not()) {
             throw DownloadException(ErrorCode.VERIFY_FILE_NOT_FILE, "Not file")
         }
         if (!request.md5.isNullOrEmpty() && destFile.md5() != request.md5) {
@@ -90,7 +90,7 @@ internal class SynchronousInterceptor : Interceptor {
     }
 }
 
-internal class LocalInterceptor : Interceptor {
+internal class LocalExistsInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Download.Response {
         val destFile = chain.request().destFile()
         val md5 = chain.request().md5
@@ -154,7 +154,7 @@ internal class ExceptionInterceptor : Interceptor {
     }
 
     private inline fun Download.Response.Builder.messageWith(t: Throwable): Download.Response.Builder {
-        return apply { message(t.toString()) }
+        return message(t.toString())
     }
 }
 

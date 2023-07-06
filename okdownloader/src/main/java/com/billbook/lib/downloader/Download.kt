@@ -223,7 +223,10 @@ interface Download {
         fun unsubscribe(url: String, subscriber: Subscriber)
     }
 
-    interface Subscriber : Callback
+    interface Subscriber {
+        fun onSuccess(call: Call, response: Response) {}
+        fun onFailure(call: Call, response: Response) {}
+    }
 }
 
 interface Named {

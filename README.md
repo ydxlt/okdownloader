@@ -1,3 +1,15 @@
+# TODO
+
+1. 文档编写；
+2. demo编写；
+   - compose app
+   - compose desktop
+
+能力建设
+
+1. 分块下载能力；
+2. 是否允许断点续传；
+
 okdownloader
 ========
 

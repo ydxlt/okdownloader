@@ -2,8 +2,7 @@ package com.billbook.lib.downloader
 
 import com.billbook.lib.downloader.internal.core.DefaultDownloadCall
 import com.billbook.lib.downloader.internal.core.DownloadPool
-import com.billbook.lib.downloader.internal.core.EventDispatcher
-import com.billbook.lib.downloader.internal.core.Publisher
+import com.billbook.lib.downloader.internal.core.Dispatcher
 import com.billbook.lib.downloader.internal.util.CPU_COUNT
 import com.billbook.lib.downloader.internal.util.DefaultOkhttpClient
 import com.billbook.lib.downloader.internal.util.asFactory
@@ -39,30 +38,34 @@ class Downloader internal constructor(
 
     internal val downloadPool = DownloadPool(executorService, idleCallback)
 
-    private val publisher: Publisher = Publisher()
+    private val dispatcher: Dispatcher = Dispatcher()
 
     fun newBuilder(): Builder {
         return Builder(this)
     }
 
     override fun newCall(request: Download.Request): Download.Call {
-        return CallWrapper(DefaultDownloadCall(this, request), publisher)
+        return CallWrapper(DefaultDownloadCall(this, request), dispatcher)
     }
 
     override fun subscribe(subscriber: Download.Subscriber) {
-        publisher.subscribe(subscriber)
+        dispatcher.subscribe(subscriber)
     }
 
     override fun subscribe(url: String, subscriber: Download.Subscriber) {
-        publisher.subscribe(url, subscriber)
+        dispatcher.subscribe(url, subscriber)
     }
 
     override fun unsubscribe(subscriber: Download.Subscriber) {
-        publisher.unsubscribe(subscriber)
+        dispatcher.unsubscribe(subscriber)
     }
 
     override fun unsubscribe(url: String, subscriber: Download.Subscriber) {
-        publisher.unsubscribe(url, subscriber)
+        dispatcher.unsubscribe(url, subscriber)
+    }
+
+    fun cancelAll() {
+        downloadPool.cancelAll()
     }
 
     class Builder {
@@ -126,11 +129,61 @@ class Downloader internal constructor(
     ) : Download.Call by call {
 
         override fun execute(callback: Download.Callback): Download.Response {
-            return call.execute(EventDispatcher(callback, subscriber))
+            return call.execute(CallbackWrapper(callback, subscriber))
         }
 
         override fun enqueue(callback: Download.Callback) {
-            call.enqueue(EventDispatcher(callback, subscriber))
+            call.enqueue(CallbackWrapper(callback, subscriber))
+        }
+    }
+
+    private class CallbackWrapper(
+        private val callback: Download.Callback,
+        private val subscriber: Download.Subscriber,
+    ) : Download.Callback {
+
+        override fun onStart(call: Download.Call) {
+            call.request.callbackExecutor.execute {
+                callback.onStart(call)
+            }
+        }
+
+        override fun onLoading(call: Download.Call, currentLength: Long, total: Long) {
+            call.request.callbackExecutor.execute {
+                callback.onLoading(call, currentLength, total)
+            }
+        }
+
+        override fun onChecking(call: Download.Call) {
+            call.request.callbackExecutor.execute {
+                callback.onChecking(call)
+            }
+        }
+
+        override fun onRetrying(call: Download.Call) {
+            call.request.callbackExecutor.execute {
+                callback.onRetrying(call)
+            }
+        }
+
+        override fun onCancel(call: Download.Call) {
+            call.request.callbackExecutor.execute {
+                callback.onCancel(call)
+            }
+        }
+
+        override fun onSuccess(call: Download.Call, response: Download.Response) {
+            call.request.callbackExecutor.execute {
+                callback.onSuccess(call, response)
+            }
+            subscriber.onSuccess(call, response)
+        }
+
+        override fun onFailure(call: Download.Call, response: Download.Response) {
+            call.request.callbackExecutor.execute {
+                callback.onFailure(call, response)
+            }
+            subscriber.onFailure(call, response)
         }
     }
 }

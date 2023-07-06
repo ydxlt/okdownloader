@@ -4,7 +4,6 @@ import com.billbook.lib.downloader.Download
 import com.billbook.lib.downloader.Downloader
 import com.billbook.lib.downloader.EventListener
 import com.billbook.lib.downloader.Interceptor
-import com.billbook.lib.downloader.internal.core.DefaultInterceptorChain
 import java.util.ServiceLoader
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.atomic.AtomicBoolean
@@ -48,7 +47,7 @@ internal class DefaultDownloadCall(
     private fun getResponseWithInterceptorChain(callback: Download.Callback): Download.Response {
         val interceptors = mutableListOf<Interceptor>()
         interceptors += RetryInterceptor(client)
-        interceptors += LocalInterceptor()
+        interceptors += LocalExistsInterceptor()
         interceptors += SynchronousInterceptor()
         interceptors += ExceptionInterceptor()
         interceptors += client.interceptors
