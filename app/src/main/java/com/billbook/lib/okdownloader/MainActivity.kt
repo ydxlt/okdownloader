@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         val request = DownloadRequest.Builder()
             .url("https://wap.pp.cn/app/dl/fs08/2023/03/21/2/110_083a6016054e988728d7b6b36f1fdb4b.apk")
             .md5("2f4374a1936b6a2a24b1a0fe3aac0edc")
-            .path(filesDir.absolutePath + "/222.apk")
+            .into(filesDir.absolutePath + "/222.apk")
             .build()
         downloader.newCall(request)
             .enqueue(object : Download.Callback {

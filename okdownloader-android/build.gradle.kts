@@ -38,5 +38,5 @@ dependencies {
     implementation(libs.commons.codec)
     implementation(libs.room.runtime)
     kapt(libs.room.compiler)
-    compileOnly(project(path = ":okdownloader"))
+    api(project(path = ":okdownloader"))
 }
