@@ -21,14 +21,14 @@ internal fun File.makeNewFile(): Boolean {
 internal fun File.renameToTarget(target: File): Boolean {
     val result = this.renameTo(target)
     if (!result) {
-        target.deleteWhenExist()
+        target.deleteIfExists()
         this.copyTo(target, true)
         return true
     }
     return true
 }
 
-internal inline fun File.deleteWhenExist() {
+internal inline fun File.deleteIfExists() {
     try {
         if (this.exists()) this.delete()
     } catch (e: Throwable) {

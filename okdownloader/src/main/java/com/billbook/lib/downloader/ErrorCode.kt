@@ -20,11 +20,12 @@ interface ErrorCode {
         const val VERIFY_MD5_NOT_MATCHED: Int = 503
         const val VERIFY_SIZE_NOT_MATCHED: Int = 504
         const val CANCEL: Int = 601
-        const val INTERRUPTED: Int = 602
-        const val ARGUMENT_EXCEPTION: Int = 603
-        const val MALFORMED_URL: Int = 604
-        const val FILE_NOT_FOUND: Int = 605
+        const val PAUSE: Int = 602
+        const val INTERRUPTED: Int = 603
+        const val FILE_NOT_FOUND: Int = 606
         const val NETWORK_NOT_ALLOWED: Int = 701
+        const val ARGUMENT_EXCEPTION: Int = 702
+        const val MALFORMED_URL: Int = 703
         const val UNKNOWN: Int = -1
     }
 }

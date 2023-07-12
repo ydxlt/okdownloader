@@ -188,9 +188,13 @@ interface Download {
 
         fun cancel()
 
+        fun pause()
+
         fun isExecuted(): Boolean
 
         fun isCanceled(): Boolean
+
+        fun isPaused(): Boolean
 
         fun interface Factory {
             fun newCall(request: Request): Call
@@ -201,6 +205,7 @@ interface Download {
         fun onStart(call: Call) {}
         fun onLoading(call: Call, current: Long, total: Long) {}
         fun onCancel(call: Call) {}
+        fun onPause(call: Call) {}
         fun onChecking(call: Call) {}
         fun onRetrying(call: Call) {}
         fun onSuccess(call: Call, response: Response) {}

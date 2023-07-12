@@ -37,6 +37,10 @@ class MainViewModel @Inject constructor(
         mutex.withLock { calls[bean.url]?.cancel() }
     }
 
+    fun pause(bean: ResourceBean) = viewModelScope.launch(Dispatchers.IO) {
+        mutex.withLock { calls[bean.url]?.pause() }
+    }
+
     fun download(bean: ResourceBean) = viewModelScope.launch(Dispatchers.IO) {
         val call = mutex.withLock {
             if (calls[bean.url] != null) return@launch
@@ -56,10 +60,8 @@ class MainViewModel @Inject constructor(
             }
 
             override fun onLoading(call: Download.Call, current: Long, total: Long) {
-                Log.i(TAG, "onLoading current = $current, total = $total")
                 val progress = current * 1f / total
                 if (progress == lastProgress) return
-                Log.i(TAG, "onLoading progress = $progress")
                 lastProgress = progress
                 updateState(bean, DownloadState.DOWNLOADING(progress))
             }
@@ -72,6 +74,10 @@ class MainViewModel @Inject constructor(
                 updateState(bean, DownloadState.CHECKING)
             }
 
+            override fun onPause(call: Download.Call) {
+                updateState(bean, DownloadState.PAUSE)
+            }
+
             override fun onRetrying(call: Download.Call) {
                 updateState(bean, DownloadState.RETRYING)
             }
@@ -82,7 +88,7 @@ class MainViewModel @Inject constructor(
             }
 
             override fun onFailure(call: Download.Call, response: Download.Response) {
-                Log.i(TAG, "onFailure response = $response")
+                Log.e(TAG, "onFailure response = $response")
                 updateState(bean, DownloadState.ERROR)
             }
         })

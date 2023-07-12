@@ -172,6 +172,12 @@ class Downloader internal constructor(
             }
         }
 
+        override fun onPause(call: Download.Call) {
+            call.request.callbackExecutor.execute {
+                callback.onPause(call)
+            }
+        }
+
         override fun onSuccess(call: Download.Call, response: Download.Response) {
             call.request.callbackExecutor.execute {
                 callback.onSuccess(call, response)

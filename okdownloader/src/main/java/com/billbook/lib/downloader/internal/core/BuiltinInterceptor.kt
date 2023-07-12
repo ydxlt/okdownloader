@@ -2,6 +2,7 @@ package com.billbook.lib.downloader.internal.core
 
 import com.billbook.lib.downloader.*
 import com.billbook.lib.downloader.internal.exception.CancelException
+import com.billbook.lib.downloader.internal.exception.PauseException
 import com.billbook.lib.downloader.internal.util.*
 import com.billbook.lib.downloader.internal.util.contentLength
 import com.billbook.lib.downloader.internal.util.makeNewFile
@@ -40,6 +41,9 @@ internal class RetryInterceptor(private val client: Downloader) : Interceptor {
 internal fun Interceptor.Chain.checkTerminal() {
     if (this.call().isCanceled()) {
         throw CancelException("Call canceled!")
+    }
+    if (this.call().isPaused()) {
+        throw PauseException("Call paused!")
     }
 }
 
@@ -110,8 +114,14 @@ internal class ExceptionInterceptor : Interceptor {
         return try {
             chain.proceed(chain.request())
         } catch (ex: CancelException) {
+            chain.request().sourceFile().deleteIfExists()
             chain.callback().onCancel(chain.call())
             Download.Response.Builder().code(ErrorCode.CANCEL)
+                .messageWith(ex)
+                .build()
+        } catch (ex: PauseException) {
+            chain.callback().onPause(chain.call())
+            Download.Response.Builder().code(ErrorCode.PAUSE)
                 .messageWith(ex)
                 .build()
         } catch (ex: StreamResetException) {

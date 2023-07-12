@@ -15,6 +15,7 @@ internal class DefaultDownloadCall(
 
     private val eventListener: EventListener = client.eventListenerFactory.create(this)
     private val canceled = AtomicBoolean(false)
+    private val paused = AtomicBoolean(false)
     private val executed = AtomicBoolean(false)
 
     override val request: Download.Request get() = originalRequest
@@ -33,6 +34,9 @@ internal class DefaultDownloadCall(
             if (response.isSuccessful()) {
                 callback.onSuccess(this, response)
                 eventListener.callSuccess(this, response)
+            } else if (isCanceled()) {
+                callback.onCancel(this)
+                eventListener.callCanceled(this)
             } else {
                 callback.onFailure(this, response)
                 eventListener.callFailed(this, response)
@@ -70,7 +74,11 @@ internal class DefaultDownloadCall(
     override fun cancel() {
         if (isCanceled()) return
         this.canceled.getAndSet(true)
-        this.eventListener.callCanceled(this)
+    }
+
+    override fun pause() {
+        if (isPaused()) return
+        this.paused.getAndSet(true)
     }
 
     override fun isExecuted(): Boolean {
@@ -79,6 +87,10 @@ internal class DefaultDownloadCall(
 
     override fun isCanceled(): Boolean {
         return this.canceled.get()
+    }
+
+    override fun isPaused(): Boolean {
+        return this.paused.get()
     }
 
     override fun toString(): String {
@@ -101,6 +113,9 @@ internal class DefaultDownloadCall(
                 if (response.isSuccessful()) {
                     callback.onSuccess(call, response)
                     eventListener.callSuccess(call, response)
+                } else if (call.isCanceled()) {
+                    callback.onCancel(call)
+                    eventListener.callCanceled(call)
                 } else {
                     callback.onFailure(call, response)
                     eventListener.callFailed(call, response)
@@ -133,7 +148,5 @@ internal class DefaultDownloadCall(
             ServiceLoader.load(Interceptor::class.java).toList()
         }
     }
-
-
 }
 
