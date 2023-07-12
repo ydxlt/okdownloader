@@ -10,7 +10,8 @@ object FakeData {
             url = "https://d-25.winudf.com/b/APK/Y29tLmluc3RhZ3JhbS5iYXJjZWxvbmFfNDkzNDUwMjY0Xzk0ZjU0NDI5?_fn=VGhyZWFkcywgYW4gSW5zdGFncmFtIGFwcF8yOTEuMC4wLjMxLjExMV9BcGtwdXJlLmFwaw&_p=Y29tLmluc3RhZ3JhbS5iYXJjZWxvbmE%3D&download_id=1172507935106000&is_hot=true&k=d57aea3bb13e5882e073aa34f88dc0bc64afa3b2&uu=http%3A%2F%2F172.16.73.1%2Fb%2FAPK%2FY29tLmluc3RhZ3JhbS5iYXJjZWxvbmFfNDkzNDUwMjY0Xzk0ZjU0NDI5%3Fk%3D68a25b2855e99a57e2f293d1503ba91664afa3b2",
             name = "Threads",
             icon = "https://image.winudf.com/v2/image1/Y29tLmluc3RhZ3JhbS5iYXJjZWxvbmFfaWNvbl8xNjg4MjYzMjE4XzAyMg/icon.webp?w=280&fakeurl=1&type=.webp",
-            size = 76639442
+            size = 76639442,
+            md5 = "9631fff7a586b9870fb0116b136cbfef"
         ),
         ResourceBean(
             url = "https://d-14.winudf.com/b/APK/Y29tLnR3aXR0ZXIuYW5kcm9pZF8yOTk2MDAwMF9lNWY2ZmE3Ng?_fn=VHdpdHRlcl85Ljk2LjAtcmVsZWFzZS4wX0Fwa3B1cmUuYXBr&_p=Y29tLnR3aXR0ZXIuYW5kcm9pZA%3D%3D&download_id=1743103226783867&is_hot=true&k=09757f94dc84697d99354b456173740c64afa8a3",
@@ -35,6 +36,7 @@ object FakeData {
             name = "Facebook",
             icon = "https://image.winudf.com/v2/image1/Y29tLmZhY2Vib29rLmthdGFuYV9pY29uXzE1NTc5OTAwMzBfMDIz/icon.webp?w=280&fakeurl=1&type=.webp",
             size = 54846526,
+            md5 = "dc050e289d9fe0f10ba2321740301f6d"
         ),
         ResourceBean(
             url = "https://d-e02.winudf.com/b/APK/Y29tLmxlbW9uLmx2b3ZlcnNlYXNfODcwMTYwMF9hNTBkMzAxNA?_fn=Q2FwQ3V0IC0gVmlkZW8gRWRpdG9yXzguNy4wX0Fwa3B1cmUuYXBr&_p=Y29tLmxlbW9uLmx2b3ZlcnNlYXM%3D&download_id=1244800703415492&is_hot=true&k=16779bd50d03d5c3f82470e04ba76b0b64afa6aa&uu=https%3A%2F%2Fd-06.winudf.com%2Fb%2FAPK%2FY29tLmxlbW9uLmx2b3ZlcnNlYXNfODcwMTYwMF9hNTBkMzAxNA%3Fk%3Dc3514a6522670cde66cf446d872e07c564afa6aa",
@@ -68,4 +70,5 @@ data class ResourceBean(
     val icon: String,
     val name: String,
     val size: Long,
+    val md5: String? = null,
 )

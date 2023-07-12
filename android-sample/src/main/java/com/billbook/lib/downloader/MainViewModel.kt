@@ -47,6 +47,7 @@ class MainViewModel @Inject constructor(
             val request = Download.Request.Builder()
                 .url(bean.url)
                 .into(File(context.downloadDir, bean.url.md5()))
+                .apply { bean.md5?.let { md5(it) } }
                 .build()
             downloader.newCall(request).also { calls[bean.url] = it }
         }
