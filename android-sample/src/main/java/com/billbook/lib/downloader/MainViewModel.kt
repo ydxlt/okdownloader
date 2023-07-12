@@ -34,67 +34,76 @@ class MainViewModel @Inject constructor(
     private val mutex = Mutex()
 
     fun cancel(bean: ResourceBean) = viewModelScope.launch(Dispatchers.IO) {
-        mutex.withLock { calls[bean.url]?.cancel() }
+        mutex.withLock {
+            calls[bean.url]?.let {
+                it.cancelSafely()
+            }
+        }
+    }
+
+    fun redownload(bean: ResourceBean) = viewModelScope.launch(Dispatchers.IO) {
+        download(bean, true)
     }
 
     fun pause(bean: ResourceBean) = viewModelScope.launch(Dispatchers.IO) {
-        mutex.withLock { calls[bean.url]?.pause() }
+        mutex.withLock { calls[bean.url]?.cancel() }
     }
 
-    fun download(bean: ResourceBean) = viewModelScope.launch(Dispatchers.IO) {
-        val call = mutex.withLock {
-            if (calls[bean.url] != null) return@launch
-            val request = Download.Request.Builder()
-                .url(bean.url)
-                .into(File(context.downloadDir, bean.url.md5()))
-                .apply { bean.md5?.let { md5(it) } }
-                .build()
-            downloader.newCall(request).also { calls[bean.url] = it }
+    fun download(bean: ResourceBean, force: Boolean = false) =
+        viewModelScope.launch(Dispatchers.IO) {
+            val call = mutex.withLock {
+                if (calls[bean.url] != null) return@launch
+                val request = Download.Request.Builder()
+                    .url(bean.url)
+                    .into(File(context.downloadDir, bean.url.md5()))
+                    .apply { bean.md5?.let { md5(it) } }
+                    .build()
+                downloader.newCall(request).also { calls[bean.url] = it }
+            }
+            if (force) {
+                call.request.sourceFile().delete()
+                call.request.destFile().delete()
+            }
+            call.execute(object : Download.Callback {
+
+                private var lastProgress = 0f
+
+                override fun onStart(call: Download.Call) {
+                    Log.i(TAG, "onStart")
+                    updateState(bean, DownloadState.DOWNLOADING(lastProgress))
+                }
+
+                override fun onLoading(call: Download.Call, current: Long, total: Long) {
+                    val progress = current * 1f / total
+                    if (progress == lastProgress) return
+                    lastProgress = progress
+                    updateState(bean, DownloadState.DOWNLOADING(progress))
+                }
+
+                override fun onCancel(call: Download.Call) {
+                    updateState(bean, DownloadState.IDLE)
+                }
+
+                override fun onChecking(call: Download.Call) {
+                    updateState(bean, DownloadState.CHECKING)
+                }
+
+                override fun onRetrying(call: Download.Call) {
+                    updateState(bean, DownloadState.RETRYING)
+                }
+
+                override fun onSuccess(call: Download.Call, response: Download.Response) {
+                    Log.i(TAG, "onSuccess response = $response")
+                    updateState(bean, DownloadState.FINISH)
+                }
+
+                override fun onFailure(call: Download.Call, response: Download.Response) {
+                    Log.e(TAG, "onFailure response = $response")
+                    updateState(bean, DownloadState.ERROR(response.code))
+                }
+            })
+            mutex.withLock { calls -= bean.url }
         }
-        call.execute(object : Download.Callback {
-
-            private var lastProgress = 0f
-
-            override fun onStart(call: Download.Call) {
-                Log.i(TAG, "onStart")
-                updateState(bean, DownloadState.DOWNLOADING(lastProgress))
-            }
-
-            override fun onLoading(call: Download.Call, current: Long, total: Long) {
-                val progress = current * 1f / total
-                if (progress == lastProgress) return
-                lastProgress = progress
-                updateState(bean, DownloadState.DOWNLOADING(progress))
-            }
-
-            override fun onCancel(call: Download.Call) {
-                updateState(bean, DownloadState.IDLE)
-            }
-
-            override fun onChecking(call: Download.Call) {
-                updateState(bean, DownloadState.CHECKING)
-            }
-
-            override fun onPause(call: Download.Call) {
-                updateState(bean, DownloadState.PAUSE)
-            }
-
-            override fun onRetrying(call: Download.Call) {
-                updateState(bean, DownloadState.RETRYING)
-            }
-
-            override fun onSuccess(call: Download.Call, response: Download.Response) {
-                Log.i(TAG, "onSuccess response = $response")
-                updateState(bean, DownloadState.FINISH)
-            }
-
-            override fun onFailure(call: Download.Call, response: Download.Response) {
-                Log.e(TAG, "onFailure response = $response")
-                updateState(bean, DownloadState.ERROR)
-            }
-        })
-        mutex.withLock { calls -= bean.url }
-    }
 
     private fun updateState(bean: ResourceBean, state: DownloadState) {
         val map = _states.value.toMutableMap()
@@ -102,7 +111,7 @@ class MainViewModel @Inject constructor(
         _states.update { map }
     }
 
-    fun cancelAll() {
+    override fun onCleared() {
         downloader.cancelAll()
     }
 }
@@ -112,9 +121,8 @@ sealed interface DownloadState {
     object IDLE : DownloadState
     object WAIT : DownloadState
     class DOWNLOADING(val progress: Float) : DownloadState
-    object PAUSE : DownloadState
     object CHECKING : DownloadState
     object RETRYING : DownloadState
     object FINISH : DownloadState
-    object ERROR : DownloadState
+    class ERROR(val code: Int) : DownloadState
 }

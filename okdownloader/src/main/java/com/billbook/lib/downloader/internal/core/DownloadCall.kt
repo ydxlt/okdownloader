@@ -4,19 +4,27 @@ import com.billbook.lib.downloader.Download
 import com.billbook.lib.downloader.Downloader
 import com.billbook.lib.downloader.EventListener
 import com.billbook.lib.downloader.Interceptor
+import okhttp3.Call
 import java.util.ServiceLoader
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.atomic.AtomicBoolean
 
+internal interface InternalCall : Download.Call {
+
+    var httpCall: Call?
+    fun isCancelSafely(): Boolean
+}
+
 internal class DefaultDownloadCall(
     private val client: Downloader,
     private val originalRequest: Download.Request
-) : Download.Call {
+) : InternalCall {
 
     private val eventListener: EventListener = client.eventListenerFactory.create(this)
     private val canceled = AtomicBoolean(false)
-    private val paused = AtomicBoolean(false)
+    private val canceledSafely = AtomicBoolean(false)
     private val executed = AtomicBoolean(false)
+    override var httpCall: Call? = null
 
     override val request: Download.Request get() = originalRequest
 
@@ -73,12 +81,13 @@ internal class DefaultDownloadCall(
 
     override fun cancel() {
         if (isCanceled()) return
+        this.httpCall?.cancel()
         this.canceled.getAndSet(true)
     }
 
-    override fun pause() {
-        if (isPaused()) return
-        this.paused.getAndSet(true)
+    override fun cancelSafely() {
+        cancel()
+        this.canceledSafely.getAndSet(true)
     }
 
     override fun isExecuted(): Boolean {
@@ -89,8 +98,8 @@ internal class DefaultDownloadCall(
         return this.canceled.get()
     }
 
-    override fun isPaused(): Boolean {
-        return this.paused.get()
+    override fun isCancelSafely(): Boolean {
+        return this.canceledSafely.get()
     }
 
     override fun toString(): String {

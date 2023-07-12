@@ -65,12 +65,16 @@ internal fun MainScreen(
                     state = state,
                     onClick = {
                         when (state) {
-                            DownloadState.IDLE, DownloadState.PAUSE, DownloadState.ERROR -> {
+                            DownloadState.IDLE, is DownloadState.ERROR -> {
                                 viewModel.download(item)
                             }
 
                             is DownloadState.DOWNLOADING -> {
-                                viewModel.cancel(item)
+                                viewModel.pause(item)
+                            }
+
+                            DownloadState.FINISH -> {
+                                viewModel.redownload(item)
                             }
 
                             else -> {}
@@ -104,27 +108,44 @@ private fun ListItem(item: ResourceBean, state: DownloadState, onClick: () -> Un
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "size: ${Formatter.formatFileSize(LocalContext.current, item.size)}",
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.labelSmall
             )
-            Spacer(modifier = Modifier.height(20.dp))
             if (state is DownloadState.DOWNLOADING) {
+                Spacer(modifier = Modifier.height(20.dp))
                 LinearProgressIndicator(progress = state.progress)
+            }
+            when (state) {
+                is DownloadState.ERROR -> {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(text = "error code: ${state.code}", style = MaterialTheme.typography.labelSmall)
+                }
+
+                DownloadState.FINISH -> {
+                    Text(
+                        text = "click to download again",
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+
+                else -> {}
             }
         }
         Button(
-            modifier = Modifier.align(Alignment.CenterVertically),
-            onClick = onClick
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .width(120.dp),
+            onClick = onClick,
+            enabled = (state is DownloadState.RETRYING || state is DownloadState.CHECKING).not()
         ) {
             Text(
                 text = when (state) {
                     DownloadState.IDLE -> "Download"
                     DownloadState.FINISH -> "Success"
-                    DownloadState.ERROR -> "Retry"
-                    DownloadState.RETRYING -> "Retrying"
-                    DownloadState.CHECKING -> "Checking"
-                    DownloadState.PAUSE -> "Continue"
+                    is DownloadState.ERROR -> "Retry"
+                    DownloadState.RETRYING -> "Pause"
+                    DownloadState.CHECKING -> "Pause"
                     DownloadState.WAIT -> "Waiting"
-                    is DownloadState.DOWNLOADING -> "Downloading"
+                    is DownloadState.DOWNLOADING -> "Pause"
                 },
                 style = MaterialTheme.typography.bodySmall,
                 overflow = TextOverflow.Ellipsis,

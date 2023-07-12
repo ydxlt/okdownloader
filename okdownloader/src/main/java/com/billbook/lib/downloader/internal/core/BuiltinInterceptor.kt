@@ -1,12 +1,17 @@
 package com.billbook.lib.downloader.internal.core
 
-import com.billbook.lib.downloader.*
+import com.billbook.lib.downloader.Download
+import com.billbook.lib.downloader.DownloadException
+import com.billbook.lib.downloader.Downloader
+import com.billbook.lib.downloader.ErrorCode
+import com.billbook.lib.downloader.Interceptor
 import com.billbook.lib.downloader.internal.exception.CancelException
-import com.billbook.lib.downloader.internal.exception.PauseException
-import com.billbook.lib.downloader.internal.util.*
+import com.billbook.lib.downloader.internal.exception.TerminalException
 import com.billbook.lib.downloader.internal.util.contentLength
+import com.billbook.lib.downloader.internal.util.deleteIfExists
 import com.billbook.lib.downloader.internal.util.makeNewFile
 import com.billbook.lib.downloader.internal.util.md5
+import com.billbook.lib.downloader.internal.util.ofRangeStart
 import com.billbook.lib.downloader.internal.util.renameToTarget
 import okhttp3.Request
 import okhttp3.Response
@@ -31,6 +36,7 @@ internal class RetryInterceptor(private val client: Downloader) : Interceptor {
             try {
                 Thread.sleep(3000)
             } catch (ex: InterruptedException) {
+                // ignore
             }
             chain.callback().onRetrying(chain.call())
             retryCount++
@@ -39,11 +45,12 @@ internal class RetryInterceptor(private val client: Downloader) : Interceptor {
 }
 
 internal fun Interceptor.Chain.checkTerminal() {
-    if (this.call().isCanceled()) {
-        throw CancelException("Call canceled!")
+    val call = this.call()
+    if (call is InternalCall && call.isCancelSafely()) {
+        throw InterruptedException("Call terminal!")
     }
-    if (this.call().isPaused()) {
-        throw PauseException("Call paused!")
+    if (call.isCanceled()) {
+        throw CancelException("Call canceled!")
     }
 }
 
@@ -114,14 +121,14 @@ internal class ExceptionInterceptor : Interceptor {
         return try {
             chain.proceed(chain.request())
         } catch (ex: CancelException) {
-            chain.request().sourceFile().deleteIfExists()
             chain.callback().onCancel(chain.call())
             Download.Response.Builder().code(ErrorCode.CANCEL)
                 .messageWith(ex)
                 .build()
-        } catch (ex: PauseException) {
-            chain.callback().onPause(chain.call())
-            Download.Response.Builder().code(ErrorCode.PAUSE)
+        } catch (ex: TerminalException) {
+            chain.callback().onCancel(chain.call())
+            chain.request().sourceFile().deleteIfExists()
+            Download.Response.Builder().code(ErrorCode.CANCEL)
                 .messageWith(ex)
                 .build()
         } catch (ex: StreamResetException) {
@@ -175,7 +182,7 @@ internal class ExchangeInterceptor(private val client: Downloader) : Interceptor
         val sourceFile = downloadRequest.sourceFile()
         if (!sourceFile.exists()) sourceFile.makeNewFile()
         chain.checkTerminal()
-        val netResponse = getRemoteResponse(downloadRequest)
+        val netResponse = getRemoteResponse(chain, downloadRequest)
         chain.checkTerminal()
         if (!netResponse.isSuccessful) throw DownloadException(
             ErrorCode.REMOTE_CONNECT_ERROR,
@@ -203,13 +210,21 @@ internal class ExchangeInterceptor(private val client: Downloader) : Interceptor
             .build()
     }
 
-    private fun getRemoteResponse(downloadRequest: Download.Request): Response {
+    private fun getRemoteResponse(
+        chain: Interceptor.Chain,
+        downloadRequest: Download.Request
+    ): Response {
         val request = Request.Builder().url(downloadRequest.url)
             .ofRangeStart(downloadRequest.sourceFile().length())
             .get()
             .build()
         return try {
-            client.okHttpClientFactory.create().newCall(request).execute()
+            client.okHttpClientFactory.create().newCall(request).also {
+                val call = chain.call()
+                if (call is InternalCall) {
+                    call.httpCall = it
+                }
+            }.execute()
         } catch (e: IOException) {
             throw DownloadException(ErrorCode.REMOTE_CONNECT_ERROR, "Could not connect: $e", e)
         }
