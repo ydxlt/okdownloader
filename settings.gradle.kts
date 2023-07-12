@@ -14,7 +14,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "okdownloader"
-include(":app")
 include(":okdownloader")
 include(":okdownloader-android")
 include(":java-sample")
+include(":android-sample")

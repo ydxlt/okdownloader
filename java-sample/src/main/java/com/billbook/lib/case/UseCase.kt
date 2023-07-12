@@ -28,7 +28,7 @@ private fun Downloader.download(url: String, path: String, md5: String? = null) 
     val request = Download.Request.Builder()
         .url(url)
         .apply { md5?.let { md5(it) } }
-        .path(path)
+        .into(path)
         .build()
     subscribe(url, object : Download.Subscriber {
         override fun onSuccess(call: Download.Call, response: Download.Response) {
