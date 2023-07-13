@@ -58,8 +58,8 @@ internal class DefaultDownloadCall(
 
     private fun getResponseWithInterceptorChain(callback: Download.Callback): Download.Response {
         val interceptors = mutableListOf<Interceptor>()
-        interceptors += ExceptionInterceptor()
         interceptors += RetryInterceptor(client)
+        interceptors += ExceptionInterceptor()
         interceptors += LocalExistsInterceptor()
         interceptors += SynchronousInterceptor()
         interceptors += client.interceptors

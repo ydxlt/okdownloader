@@ -135,15 +135,15 @@ private fun ListItem(item: ResourceBean, state: DownloadState, onClick: () -> Un
                 .align(Alignment.CenterVertically)
                 .width(120.dp),
             onClick = onClick,
-            enabled = (state is DownloadState.RETRYING || state is DownloadState.CHECKING).not()
+            enabled = (state is DownloadState.RETRYING || state is DownloadState.CHECKING || state is DownloadState.WAIT).not()
         ) {
             Text(
                 text = when (state) {
                     DownloadState.IDLE -> "Download"
                     DownloadState.FINISH -> "Success"
                     is DownloadState.ERROR -> "Retry"
-                    DownloadState.RETRYING -> "Pause"
-                    DownloadState.CHECKING -> "Pause"
+                    DownloadState.RETRYING -> "Retrying"
+                    DownloadState.CHECKING -> "Checking"
                     DownloadState.WAIT -> "Waiting"
                     is DownloadState.DOWNLOADING -> "Pause"
                 },

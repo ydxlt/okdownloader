@@ -64,6 +64,7 @@ class MainViewModel @Inject constructor(
                 call.request.sourceFile().delete()
                 call.request.destFile().delete()
             }
+            updateState(bean, DownloadState.WAIT)
             call.execute(object : Download.Callback {
 
                 private var lastProgress = 0f
