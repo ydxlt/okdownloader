@@ -154,4 +154,49 @@ class DownloadUnitTest {
         Assert.assertFalse(call.isCanceled())
         Assert.assertTrue(request.sourceFile().exists())
     }
+
+    @Test
+    fun callback_is_correct() {
+        val request = buildRequest()
+        val call = downloader.newCall(request)
+        val methodCount = mutableMapOf<String, Int>()
+        call.execute(object : Download.Callback {
+            override fun onStart(call: Download.Call) {
+                super.onStart(call)
+                methodCount["onStart"] = methodCount["onStart"] ?: 0 + 1
+            }
+
+            override fun onCancel(call: Download.Call) {
+                super.onCancel(call)
+                methodCount["onCancel"] = methodCount["onCancel"] ?: 0 + 1
+            }
+
+            override fun onChecking(call: Download.Call) {
+                super.onChecking(call)
+                methodCount["onChecking"] = methodCount["onChecking"] ?: 0 + 1
+            }
+
+            override fun onRetrying(call: Download.Call) {
+                super.onRetrying(call)
+                methodCount["onRetrying"] = methodCount["onRetrying"] ?: 0 + 1
+            }
+
+            override fun onSuccess(call: Download.Call, response: Download.Response) {
+                super.onSuccess(call, response)
+                println("onSuccess")
+                methodCount["onSuccess"] = methodCount["onSuccess"] ?: 0 + 1
+            }
+
+            override fun onFailure(call: Download.Call, response: Download.Response) {
+                super.onFailure(call, response)
+                println("onFailure")
+                methodCount["onFailure"] = methodCount["onFailure"] ?: 0 + 1
+            }
+
+            override fun onLoading(tmp: Download.Call, current: Long, total: Long) {
+            }
+        })
+        Assert.assertEquals(1, methodCount["onStart"])
+        Assert.assertEquals(1, methodCount["onSuccess"])
+    }
 }
