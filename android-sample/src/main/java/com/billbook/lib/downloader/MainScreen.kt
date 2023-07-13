@@ -134,7 +134,7 @@ private fun ListItem(item: ResourceBean, state: DownloadState, onClick: () -> Un
                 LinearProgressIndicator(progress = state.progress)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "speed: ${String.format("%.2f", state.speed)} kb/s",
+                    text = "speed: ${String.format("%.2f", state.speed)} M/s",
                     style = MaterialTheme.typography.labelSmall
                 )
             }
