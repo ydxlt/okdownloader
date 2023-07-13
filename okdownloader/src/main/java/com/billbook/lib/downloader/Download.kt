@@ -1,6 +1,7 @@
 package com.billbook.lib.downloader
 
 import com.billbook.lib.downloader.internal.util.requireNotNullOrEmpty
+import okhttp3.HttpUrl
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -187,6 +188,7 @@ interface Download {
         fun enqueue(callback: Callback)
 
         fun cancel()
+
         fun cancelSafely()
 
         fun isExecuted(): Boolean

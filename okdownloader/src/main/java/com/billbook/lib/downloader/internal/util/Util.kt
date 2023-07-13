@@ -32,6 +32,7 @@ internal inline fun File.deleteIfExists() {
     try {
         if (this.exists()) this.delete()
     } catch (e: Throwable) {
+        e.printStackTrace()
     }
 }
 

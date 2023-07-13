@@ -105,6 +105,12 @@ internal class DownloadPool(
         runningSyncCalls.forEach { it.cancel() }
     }
 
+    @Synchronized
+    fun cancelAllSafely() {
+        runningAsyncCalls.forEach { it.call.cancelSafely() }
+        runningSyncCalls.forEach { it.cancelSafely() }
+    }
+
     private fun <T> finished(calls: Deque<T>, call: T) {
         val idleCallback: Runnable?
         synchronized(this) {

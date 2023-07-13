@@ -68,6 +68,10 @@ class Downloader internal constructor(
         downloadPool.cancelAll()
     }
 
+    fun cancelAllSafely() {
+        downloadPool.cancelAllSafely()
+    }
+
     class Builder {
         internal var eventListenerFactory: EventListener.Factory = EventListener.NONE.asFactory()
         internal var defaultMaxRetry: Int = 3
