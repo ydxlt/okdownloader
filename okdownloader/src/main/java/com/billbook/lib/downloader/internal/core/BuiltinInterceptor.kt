@@ -119,9 +119,14 @@ internal class LocalExistsInterceptor : Interceptor {
 internal class ExceptionInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Download.Response {
         return try {
-            val response = chain.proceed(chain.request())
-            if (response.isSuccessful().not()) chain.checkTerminal()
-            response
+            try {
+                val response = chain.proceed(chain.request())
+                if (response.isSuccessful().not()) chain.checkTerminal()
+                response
+            } catch (t: Throwable) {
+                chain.checkTerminal()
+                throw t
+            }
         } catch (ex: CancelException) {
             chain.callback().onCancel(chain.call())
             Download.Response.Builder().code(ErrorCode.CANCEL)
