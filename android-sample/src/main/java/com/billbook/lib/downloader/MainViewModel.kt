@@ -75,18 +75,24 @@ class MainViewModel @Inject constructor(
             updateState(bean, DownloadState.WAIT)
             call.execute(object : Download.Callback {
 
-                private var lastProgress = 0f
+                private var lastByteSize: Long = 0L
+                private var lastTime: Long = 0L
 
                 override fun onStart(call: Download.Call) {
-                    Log.i(TAG, "onStart")
-                    updateState(bean, DownloadState.DOWNLOADING(lastProgress))
+                    updateState(bean, DownloadState.DOWNLOADING(0f, 0f))
+                    lastByteSize = call.request.sourceFile().length()
+                    lastTime = System.currentTimeMillis()
                 }
 
                 override fun onLoading(call: Download.Call, current: Long, total: Long) {
-                    val progress = current * 1f / total
-                    if (progress == lastProgress) return
-                    lastProgress = progress
-                    updateState(bean, DownloadState.DOWNLOADING(progress))
+                    val currentTime = System.currentTimeMillis()
+                    if (currentTime - lastTime >= 1000) {
+                        val speed = (current - lastByteSize) / 1000 * 1f / (currentTime - lastTime)
+                        val progress = current * 1f / total
+                        updateState(bean, DownloadState.DOWNLOADING(progress, speed))
+                        lastByteSize = current
+                        lastTime = currentTime
+                    }
                 }
 
                 override fun onCancel(call: Download.Call) {
@@ -129,7 +135,7 @@ sealed interface DownloadState {
 
     object IDLE : DownloadState
     object WAIT : DownloadState
-    class DOWNLOADING(val progress: Float) : DownloadState
+    class DOWNLOADING(val progress: Float, val speed: Float = 0f) : DownloadState
     object CHECKING : DownloadState
     object RETRYING : DownloadState
     object FINISH : DownloadState

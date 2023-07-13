@@ -130,8 +130,13 @@ private fun ListItem(item: ResourceBean, state: DownloadState, onClick: () -> Un
                 style = MaterialTheme.typography.labelSmall
             )
             if (state is DownloadState.DOWNLOADING) {
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 LinearProgressIndicator(progress = state.progress)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "speed: ${String.format("%.2f", state.speed)} kb/s",
+                    style = MaterialTheme.typography.labelSmall
+                )
             }
             when (state) {
                 is DownloadState.ERROR -> {

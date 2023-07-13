@@ -37,8 +37,10 @@ class Downloader internal constructor(
     val interceptors: List<Interceptor> = builder.interceptors.toImmutableList()
 
     internal val downloadPool = DownloadPool(executorService, idleCallback)
+    internal val okhttpClient by lazy { builder.okHttpClientFactory.create() }
 
     private val dispatcher: Dispatcher = Dispatcher()
+
 
     fun newBuilder(): Builder {
         return Builder(this)

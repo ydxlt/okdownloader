@@ -193,7 +193,7 @@ internal class ExchangeInterceptor(private val client: Downloader) : Interceptor
         chain.checkTerminal()
         if (!httpResponse.isSuccessful) throw DownloadException(
             ErrorCode.REMOTE_CONNECT_ERROR,
-            "Remote connect failed, message = ${httpResponse.message}, httpCode = ${httpResponse.code}"
+            "Http connection failed, message = ${httpResponse.message}, httpCode = ${httpResponse.code}"
         )
         val body = httpResponse.body
             ?: throw DownloadException(ErrorCode.REMOTE_CONTENT_EMPTY, "Remote source body is null")
@@ -228,7 +228,7 @@ internal class ExchangeInterceptor(private val client: Downloader) : Interceptor
             .get()
             .build()
         try {
-            val httpCall = client.okHttpClientFactory.create().newCall(httpRequest)
+            val httpCall = client.okhttpClient.newCall(httpRequest)
             val call = chain.call()
             if (call is InternalCall) {
                 call.httpCall = httpCall
@@ -236,7 +236,7 @@ internal class ExchangeInterceptor(private val client: Downloader) : Interceptor
             return httpCall.execute()
         } catch (e: IOException) {
             chain.checkTerminal()
-            throw DownloadException(ErrorCode.REMOTE_CONNECT_ERROR, "Connect failed: $e", e)
+            throw DownloadException(ErrorCode.REMOTE_CONNECT_ERROR, "Connection failed: $e", e)
         }
     }
 }
