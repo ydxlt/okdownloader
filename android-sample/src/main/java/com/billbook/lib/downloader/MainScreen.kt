@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -57,31 +58,49 @@ internal fun MainScreen(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarState) }
     ) {
-        LazyColumn(modifier = Modifier.padding(it)) {
-            items(items = beans) { item ->
-                val state = states.getOrElse(item.url) { DownloadState.IDLE }
-                ListItem(
-                    item = item,
-                    state = state,
-                    onClick = {
-                        when (state) {
-                            DownloadState.IDLE, is DownloadState.ERROR -> {
-                                viewModel.download(item)
-                            }
+        Column(modifier = Modifier.padding(it)) {
+            LazyColumn(modifier = Modifier.weight(1f)) {
+                items(items = beans) { item ->
+                    val state = states.getOrElse(item.url) { DownloadState.IDLE }
+                    ListItem(
+                        item = item,
+                        state = state,
+                        onClick = {
+                            when (state) {
+                                DownloadState.IDLE, is DownloadState.ERROR -> {
+                                    viewModel.download(item)
+                                }
 
-                            is DownloadState.DOWNLOADING -> {
-                                viewModel.pause(item)
-                            }
+                                is DownloadState.DOWNLOADING -> {
+                                    viewModel.pause(item)
+                                }
 
-                            DownloadState.FINISH -> {
-                                viewModel.redownload(item)
-                            }
+                                DownloadState.FINISH -> {
+                                    viewModel.redownload(item)
+                                }
 
-                            else -> {}
+                                else -> {}
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
+            Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = { viewModel.startAll() },
+                ) {
+                    Text(text = "Download All")
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = { viewModel.cancelAll() },
+                ) {
+                    Text(text = "Cancel All")
+                }
+            }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
@@ -117,7 +136,10 @@ private fun ListItem(item: ResourceBean, state: DownloadState, onClick: () -> Un
             when (state) {
                 is DownloadState.ERROR -> {
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text(text = "error code: ${state.code}", style = MaterialTheme.typography.labelSmall)
+                    Text(
+                        text = "error code: ${state.code}",
+                        style = MaterialTheme.typography.labelSmall
+                    )
                 }
 
                 DownloadState.FINISH -> {

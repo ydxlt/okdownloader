@@ -45,6 +45,14 @@ class MainViewModel @Inject constructor(
         download(bean, true)
     }
 
+    fun startAll() {
+        FakeData.resources.forEach { download(it) }
+    }
+
+    fun cancelAll() {
+        downloader.cancelAllSafely()
+    }
+
     fun pause(bean: ResourceBean) = viewModelScope.launch(Dispatchers.IO) {
         mutex.withLock { calls[bean.url]?.cancel() }
     }
