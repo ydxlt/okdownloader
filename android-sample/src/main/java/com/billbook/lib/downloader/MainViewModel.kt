@@ -45,14 +45,6 @@ class MainViewModel @Inject constructor(
         download(bean, true)
     }
 
-    fun startAll() {
-        FakeData.resources.forEach { download(it) }
-    }
-
-    fun cancelAll() {
-        downloader.cancelAllSafely()
-    }
-
     fun pause(bean: ResourceBean) = viewModelScope.launch(Dispatchers.IO) {
         mutex.withLock { calls[bean.url]?.cancel() }
         updateState(bean, DownloadState.IDLE)
@@ -88,9 +80,13 @@ class MainViewModel @Inject constructor(
                 override fun onLoading(call: Download.Call, current: Long, total: Long) {
                     val currentTime = System.currentTimeMillis()
                     if (currentTime - lastTime >= 1000) {
-                        val speed = ((current - lastByteSize) / 1024 / 1024) * 1f / ((currentTime - lastTime) / 1000)
+                        val mb = (current  - lastByteSize) * 1f / (1024 * 1024)
+                        val speed = mb / ((currentTime - lastTime) / 1000f)
                         val progress = current * 1f / total
-                        updateState(bean, DownloadState.DOWNLOADING(progress, speed.coerceAtLeast(0f)))
+                        updateState(
+                            bean,
+                            DownloadState.DOWNLOADING(progress, speed.coerceAtLeast(0f))
+                        )
                         lastByteSize = current
                         lastTime = currentTime
                     }

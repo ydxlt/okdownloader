@@ -11,6 +11,7 @@ java {
 apply(from = "../maven_publish.gradle")
 
 dependencies {
+    testImplementation(project(path = ":fakedata"))
     testImplementation(libs.test.junit)
     api(libs.okhttp)
     implementation(libs.commons.codec)

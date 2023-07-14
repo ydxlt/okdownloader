@@ -22,7 +22,7 @@ object FakeData {
         ),
         ResourceBean(
             url = "http://cdn.billbook.net.cn/apk/Cash%E2%80%99em%20All_%20Play%20%26%20Win_4.8.1-CashemAll_Apkpure.apk",
-            name = "Cash’em All: Play & Win",
+            name = "Cash’em All: Play",
             icon = "https://image.winudf.com/v2/image1/b25saW5lLmNhc2hlbWFsbC5hcHBfaWNvbl8xNTk0NDA0NDY5XzAwOA/icon.webp?w=280&fakeurl=1&type=.webp",
             size = 56572333,
             md5 = "1627a6317e820347ebeeec1aef6e6df3"
@@ -57,7 +57,7 @@ object FakeData {
         ),
         ResourceBean(
             url = "http://cdn.billbook.net.cn/apk/WhatsApp%20Messenger_2.23.15.3_Apkpure.apk",
-            name = "WhatsApp Messenger",
+            name = "WhatsApp",
             icon = "https://image.winudf.com/v2/image1/Y29tLndoYXRzYXBwX2ljb25fMTU1OTg1MDA2NF8wNjI/icon.webp?w=280&fakeurl=1&type=.webp",
             size = 54225683,
             md5 = "57dfd00e1a5319cf8d5fa9b1f9e1a28e"
