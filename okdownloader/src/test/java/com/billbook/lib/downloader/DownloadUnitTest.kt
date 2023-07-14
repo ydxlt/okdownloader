@@ -1,5 +1,6 @@
 package com.billbook.lib.downloader
 
+import com.billbook.lib.downloader.internal.util.md5
 import okhttp3.internal.notifyAll
 import okhttp3.internal.wait
 import org.junit.Assert
@@ -198,5 +199,34 @@ class DownloadUnitTest {
         })
         Assert.assertEquals(1, methodCount["onStart"])
         Assert.assertEquals(1, methodCount["onSuccess"])
+    }
+
+    @Test
+    fun download_is_correct() {
+        val request = Download.Request.Builder()
+            .url(FakeData.resources[0].url)
+            .into(Files.createTempFile(UUID.randomUUID().toString(), ".apk").toFile())
+            .build()
+        val response = downloader.newCall(request).execute()
+        Assert.assertTrue(response.isSuccessful())
+        Assert.assertFalse(response.isBreakpoint())
+        Assert.assertTrue(response.output?.exists() == true)
+        Assert.assertEquals(FakeData.resources[0].size, response.downloadLength)
+        Assert.assertEquals(FakeData.resources[0].size, response.totalSize)
+        Assert.assertEquals(FakeData.resources[0].md5, response.output?.md5())
+    }
+
+    @Test
+    fun retry_count_is_correct() {
+        val request = Download.Request.Builder()
+            .url("https://xxx")
+            .into(Files.createTempFile(UUID.randomUUID().toString(), ".apk").toFile())
+            .build()
+        val response = downloader.newCall(request).execute()
+        Assert.assertFalse(response.isSuccessful())
+        Assert.assertFalse(response.output?.exists() == true)
+        Assert.assertEquals(3, response.retryCount)
+        Assert.assertEquals(0, response.downloadLength)
+        Assert.assertEquals(0, response.totalSize)
     }
 }
