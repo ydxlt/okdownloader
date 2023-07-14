@@ -7,8 +7,7 @@ object FakeData {
 
     val resources: List<ResourceBean> = listOf(
         ResourceBean(
-//            url = "http://cdn.billbook.net.cn/apk/Threads%2C%20an%20Instagram%20app_291.0.0.31.111_Apkpure.apk",
-            url = "https://macross-jks.bilibili.co/archive/fawkes/pack/android64/12436467/iBiliPlayer-apinkDebug-7.39.0-b12436467.apk",
+            url = "http://cdn.billbook.net.cn/apk/Threads%2C%20an%20Instagram%20app_291.0.0.31.111_Apkpure.apk",
             name = "Threads",
             icon = "https://image.winudf.com/v2/image1/Y29tLmluc3RhZ3JhbS5iYXJjZWxvbmFfaWNvbl8xNjg4MjYzMjE4XzAyMg/icon.webp?w=280&fakeurl=1&type=.webp",
             size = 76639442,
