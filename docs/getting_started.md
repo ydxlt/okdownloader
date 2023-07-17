@@ -1,8 +1,8 @@
 # Getting Started
 
-## Asynchronous Download
+## 异步下载
 
-`Asynchronous Download`意味着在异步线程中执行
+`同步下载`意味着在异步线程中执行
 
 ```kotlin
 val request = Download.Request.Builder()
@@ -28,9 +28,9 @@ call.enqueue(object : Download.Callback {
 })
 ```
 
-## Synchronous Download
+## 同步下载
 
-`Synchronous Download`意味着在当前线程中执行，即阻塞调用线程执行
+`同步下载`意味着在当前线程中执行，即阻塞调用线程执行
 
 ```kotlin
 val request = Download.Request.Builder()
@@ -38,7 +38,7 @@ val request = Download.Request.Builder()
     .into(file)
     .build()
 val call = downloader.newCall(request)
-call.execute()
+val response = call.execute()
 ```
 
 添加回调监听
@@ -55,6 +55,20 @@ call.execute(object : Download.Callback {
     }
 })
 ```
+
+通常，在协程中使用同步下载
+
+```kotlin
+withContext(Dispatchers.IO){
+    val request = Download.Request.Builder()
+        .url(url)
+        .into(file)
+        .build()
+    val call = downloader.newCall(request)
+    val response = call.execute()
+}
+```
+
 
 ## 资源校验
 
@@ -99,7 +113,7 @@ val request = Download.Request.Builder()
 
 ## 设置tag
 
-用来标记任务
+用来标记任务，可用于上报区分 App 中的不同业务
 
 ```kotlin
 val request = Download.Request.Builder()

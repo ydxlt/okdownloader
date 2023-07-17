@@ -37,7 +37,7 @@ nav:
   - 'Overview': index.md
   - 'Getting Started': getting_started.md
   - 'For Android': for_android.md
-  - 'Optional Settings': option.md
+  - 'Optional Settings': optional_settings.md
   - 'Extending the downloader Pipeline': downloader_pipeline.md
   - 'FAQ': faq.md
   - 'API ⏏': api/index.html
