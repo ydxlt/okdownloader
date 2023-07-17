@@ -2,13 +2,13 @@
 site_name: 'OkDownloader'
 site_description: 'A downloader library base on OkHttp for Java and Android.'
 site_author: '2023 OkDownloader Contributors'
-site_url: 'https://okdownloader.github.io/okdownloader/'
+site_url: 'https://ydxlt.github.io/okdownloader/'
 remote_branch: gh-pages
 edit_uri: ""
 
 # Repository
 repo_name: 'OkDownloader'
-repo_url: 'https://github.com/OkDownloader/OkDownloader'
+repo_url: 'https://github.com/okdownloader'
 
 # Copyright
 copyright: 'Copyright &copy; 2023 OkDownloader Contributors'
@@ -30,7 +30,7 @@ theme:
 extra:
   social:
     - icon: 'fontawesome/brands/github'
-      link: 'https://github.com/coil-kt/coil'
+      link: 'https://github.com/ydxlt/okdownloader'
 
 # Navigation
 nav:
