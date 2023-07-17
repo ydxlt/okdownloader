@@ -8,7 +8,8 @@ edit_uri: ""
 
 # Repository
 repo_name: 'OkDownloader'
-repo_url: 'https://github.com/ydxlt/okdownloader'
+# repo_url: 'https://github.com/ydxlt/okdownloader'
+repo_url: 'https://github.com/coil-kt/coil'
 
 # Copyright
 copyright: 'Copyright &copy; 2023 OkDownloader Contributors'
