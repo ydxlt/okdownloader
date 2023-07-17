@@ -36,17 +36,13 @@ extra:
 nav:
   - 'Overview': index.md
   - 'Getting Started': getting_started.md
-  - 'Synchronous Download': synchronous_download.md
-  - 'Asynchronous Download': asynchronous_download.md
-  - 'Transformations': transformations.md
-  - 'Transitions': transitions.md
-  - 'Extending the Image Pipeline': image_pipeline.md
-  - 'Java Compatibility': java_compatibility.md
+  - 'For Android': for_android.md
+  - 'Optional Settings': option.md
+  - 'Extending the downloader Pipeline': downloader_pipeline.md
   - 'FAQ': faq.md
   - 'API ⏏': api/index.html
   - 'Change Log': changelog.md
   - 'Contributing': contributing.md
-  - 'Code of Conduct': code_of_conduct.md
 
 # CSS
 extra_css:

@@ -9,7 +9,7 @@ fun main() {
         .eventListenerFactory { ReporterEventListener() }
         .idleCallback { println("DownloadPool idle!") }
         .build()
-    downloader.subscribe(object : Download.Subscriber {
+    val subscriber = object : Download.Subscriber {
         override fun onSuccess(call: Download.Call, response: Download.Response) {
             super.onSuccess(call, response)
             println("GlobalSubscriber: onSuccess call = $call, response = $response")
@@ -19,7 +19,9 @@ fun main() {
             super.onFailure(call, response)
             println("GlobalSubscriber: onFailure call = $call, response = $response")
         }
-    })
+    }
+    downloader.subscribe(subscriber)
+    downloader.unsubscribe(subscriber)
     val url = "https://wap.pp.cn/app/dl/fs08/2023/03/21/2/110_083a6016054e988728d7b6b36f1fdb4b.apk"
     downloader.download(url, System.getProperty("user.dir") + "/downloads/test.apk")
 }
