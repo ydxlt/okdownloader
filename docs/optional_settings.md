@@ -1,10 +1,12 @@
-# 自定义下载设置
+Optional Settings
+========================
 
-以下设置项均可选，可以根据自己的项目需要进行设置
+The following settings are optional and can be customized according to your project needs.
 
-## 事件监听
+Event Listeners
+---------------
 
-通过`eventListenerFactory`方法设置下载事件监听，如下是设置上报的一个示例
+Set download event listeners using the `eventListenerFactory` method. For example:
 
 ```kotlin
 val downloader = Downloader.Builder()
@@ -12,7 +14,7 @@ val downloader = Downloader.Builder()
     .build()
 ```
 
-ReporterEventListener
+ReporterEventListener:
 
 ```kotlin
 class ReporterEventListener : EventListener() {
@@ -26,26 +28,28 @@ class ReporterEventListener : EventListener() {
 }
 ```
 
-## 监听任务空闲
+Idle Task Callback
+------------------
 
-通过`idleCallback`设置任务空闲监听
+Set idle task callback using the `idleCallback` method
 
 ```kotlin
 val downloader = Downloader.Builder()
-    .idleCallback { // download pool idle }
+    .idleCallback { // handle download pool idle }
     .build()
 ```
 
-## 自定义 OkHttpClient
+Custom OkHttpClient
+-------------------
 
-通过`okhttpClientFactory`设置自定义 OkHttpClient
+Set a custom OkHttpClient using the `okHttpClientFactory` method
 
 ```kotlin
 val downloader = Downloader.Builder()
     .okHttpClientFactory { buildOkHttpClient() }
     .build()
 
-private fun buildOKHttpClient(): OkHttpClient {
+private fun buildOkHttpClient(): OkHttpClient {
     return OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
@@ -56,9 +60,10 @@ private fun buildOKHttpClient(): OkHttpClient {
 }
 ```
 
-## 设置默认重试次数
+Set Default Retry Count
+-----------------------
 
-默认重试次数为 3 次
+Set the default retry count. The default is 3
 
 ```kotlin
 val downloader = Downloader.Builder()
@@ -66,13 +71,13 @@ val downloader = Downloader.Builder()
     .build()
 ```
 
-## 设置任务执行线程池
+Set Task Execution Thread Pool
+------------------------------
 
-调用`executorService`设置异步下载任务执行线程池
+Set a custom asynchronous download task execution thread pool using the `executorService` method
 
 ```kotlin
 val downloader = Downloader.Builder()
     .executorService(CustomExecutorService())
     .build()
 ```
-

@@ -1,8 +1,10 @@
-# Getting Started
+Getting Started
+===============
 
-## 异步下载
+Asynchronous Download
+---------------------
 
-`同步下载`意味着在异步线程中执行
+`Asynchronous download` means executing in an asynchronous thread.
 
 ```kotlin
 val request = Download.Request.Builder()
@@ -13,7 +15,7 @@ val call = downloader.newCall(request)
 call.enqueue()
 ```
 
-添加回调监听
+Add callback listeners:
 
 ```kotlin
 call.enqueue(object : Download.Callback {
@@ -28,9 +30,10 @@ call.enqueue(object : Download.Callback {
 })
 ```
 
-## 同步下载
+Synchronous Download
+--------------------
 
-`同步下载`意味着在当前线程中执行，即阻塞调用线程执行
+`Synchronous download` means executing in the current thread, blocking the calling thread.
 
 ```kotlin
 val request = Download.Request.Builder()
@@ -41,7 +44,7 @@ val call = downloader.newCall(request)
 val response = call.execute()
 ```
 
-添加回调监听
+Add callback listeners
 
 ```kotlin
 call.execute(object : Download.Callback {
@@ -56,23 +59,37 @@ call.execute(object : Download.Callback {
 })
 ```
 
-通常，在协程中使用同步下载
+Usually, synchronous download is used in coroutines:
 
 ```kotlin
-withContext(Dispatchers.IO){
+withContext(Dispatchers.IO) {
     val request = Download.Request.Builder()
         .url(url)
         .into(file)
         .build()
-    val call = downloader.newCall(request)
-    val response = call.execute()
+    val response = downloader.newCall(request).execute()
 }
 ```
 
+Canceling Download
+------------------
 
-## 资源校验
+```kotlin
+call.cancel()
+```
 
-可以给 Request 设置 md5，这样会进行MD5 校验
+or
+
+```kotlin
+call.cancelSafely()
+```
+
+The difference between `cancel` and `cancelSafely` is that `cancelSafely()` will delete the downloaded temporary file.
+
+File Verification
+-----------------
+
+Set the `MD5` value to perform MD5 verification upon download completion
 
 ```kotlin
 val request = Download.Request.Builder()
@@ -80,7 +97,8 @@ val request = Download.Request.Builder()
     .md5(md5)
     .build()
 ```
-还可以设置文件大小，这样在下载完成时会校验文件大小
+
+Set the `size` of the file to verify the file size upon download completion:
 
 ```kotlin
 val request = Download.Request.Builder()
@@ -89,9 +107,10 @@ val request = Download.Request.Builder()
     .build()
 ```
 
-## 设置重试
+Setting Retries
+---------------
 
-设置重试次数，默认重试次数为 3 次
+Set the number of retries. The default number of retries is 3:
 
 ```kotlin
 val request = Download.Request.Builder()
@@ -100,9 +119,10 @@ val request = Download.Request.Builder()
     .build()
 ```
 
-## 设置优先级
+Setting Priority
+----------------
 
-OkDownloader支持 High，MIddle，low 三种优先级，默认优先级为 Middle
+Supports three priority levels: High, Middle, and Low. The default priority is Middle
 
 ```kotlin
 val request = Download.Request.Builder()
@@ -111,9 +131,10 @@ val request = Download.Request.Builder()
     .build()
 ```
 
-## 设置tag
+Setting Tags
+------------
 
-用来标记任务，可用于上报区分 App 中的不同业务
+Tags are used to label tasks and can be used to differentiate different tasks within the app for reporting purposes:
 
 ```kotlin
 val request = Download.Request.Builder()
@@ -122,26 +143,26 @@ val request = Download.Request.Builder()
     .build()
 ```
 
-## 任务订阅
+Task Subscription
+-----------------
 
-OkDownloader除了任务回调之外，还支持任务订阅，如下将会订阅该 Downloader所有的下载任务结果
+In addition to task callbacks, task subscription is supported:
 
 ```kotlin
 val subscriber = object : Download.Subscriber {
     override fun onSuccess(call: Download.Call, response: Download.Response) {
-        // Do you job
+        // Do your job
     }
 
     override fun onFailure(call: Download.Call, response: Download.Response) {
-        // Do you job
+        // Do your job
     }
 }
 downloader.subscribe(subscriber)
 ```
 
-取消订阅
+Unsubscribe:
 
 ```kotlin
 downloader.unsubscribe(subscriber)
 ```
-
