@@ -18,8 +18,8 @@ copyright: 'Copyright &copy; 2023 OkDownloader Contributors'
 theme:
   name: 'material'
   language: 'en'
-  favicon: 'images/coil_logo_black.ico'
-  logo: 'images/coil_logo_black.svg'
+  favicon: 'images/favicon.svg'
+  logo: 'images/logo.svg'
   palette:
     primary: 'white'
     accent: 'white'
