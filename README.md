@@ -8,8 +8,6 @@ A downloader base on OkHttp for Java and Android.
 - Modern: OkDownloader is Kotlin-first and base on OkHttp
 - Easy to expand: support SPI and dynomic Interceptor to expand
 
-![1689575903705](image/README/1689575903705.png)
-
 Features
 --------
 
