@@ -36,19 +36,12 @@ extra:
 nav:
   - 'Overview': index.md
   - 'Getting Started': getting_started.md
-  - 'Image Loaders': image_loaders.md
-  - 'Image Requests': image_requests.md
-  - 'Targets': targets.md
+  - 'Synchronous Download': synchronous_download.md
+  - 'Asynchronous Download': asynchronous_download.md
   - 'Transformations': transformations.md
   - 'Transitions': transitions.md
   - 'Extending the Image Pipeline': image_pipeline.md
   - 'Java Compatibility': java_compatibility.md
-  - 'Jetpack Compose': compose.md
-  - 'GIFs': gifs.md
-  - 'SVGs': svgs.md
-  - 'Video Frames': videos.md
-  - 'Testing': testing.md
-  - 'Recipes': recipes.md
   - 'FAQ': faq.md
   - 'API ⏏': api/index.html
   - 'Change Log': changelog.md
