@@ -6,7 +6,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://ydxlt.github.io/okdownloader/for_android/</loc>
+         <lastmod>2023-07-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://ydxlt.github.io/okdownloader/getting_started/</loc>
+         <lastmod>2023-07-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://ydxlt.github.io/okdownloader/options/</loc>
          <lastmod>2023-07-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
