@@ -1,7 +1,7 @@
 OkDownloader
 ============
 
-A cross-platform downloader library for Java and Android based on OkHttp.
+A downloader library for Java and Android based on OkHttp.
 
 * Easy to use: Simple API similar to OkHttp.
 * Rich in features: Supports synchronous/asynchronous downloads, network restrictions, multithreading, task priorities, resource verification, and more.
@@ -65,7 +65,7 @@ Cancel download
 call.cancel() // or call.cancelSafely()
 ```
 
-Check out OkDownloader's [full documentation here](https://ydxlt.github.io/okdownloader/).
+Check out OkDownloader's [full documentation here](https://ydxlt.github.io/okdownloader/getting_started/).
 
 How to Expand
 -------------
