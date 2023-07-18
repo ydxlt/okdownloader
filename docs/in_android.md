@@ -7,7 +7,7 @@ In Android, you can add the following dependency
 implementation("com.billbook.lib:okdownloader-android:1.0.0")
 ```
 
-To add a copy interceptor that records download tasks and prioritizes copying for subsequent downloads of the same resource to prevent duplicate downloads, use the `CopyOnExists` mechanism:
+To add a copy interceptor that records download tasks and prioritizes copying for subsequent downloads of the same resource to `prevent duplicate downloads`, use the `CopyOnExists` mechanism:
 
 ```kotlin
 val downloader = Downloader.Builder()
@@ -25,7 +25,7 @@ val downloader = Downloader.Builder()
     .build()
 ```
 
-Afterward, you can set network restrictions:
+Afterward, you can set network restrictions
 
 ```kotlin
 val request = DownloadRequest.Builder()
@@ -33,7 +33,7 @@ val request = DownloadRequest.Builder()
     .build()
 ```
 
-To add a storage interceptor that checks for insufficient disk space and avoids ineffective downloads:
+To add a storage interceptor that checks for insufficient disk space and avoids ineffective downloads
 
 ```kotlin
 val downloader = Downloader.Builder()

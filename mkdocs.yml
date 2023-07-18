@@ -36,7 +36,7 @@ extra:
 nav:
   - 'Overview': index.md
   - 'Getting Started': getting_started.md
-  - 'For Android': for_android.md
+  - 'In Android': in_android.md
   - 'Optional Settings': optional_settings.md
   - 'How to Expand': downloader_pipeline.md
   - 'Best Practices': best_practices.md
