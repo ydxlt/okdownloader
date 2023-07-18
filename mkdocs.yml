@@ -40,7 +40,7 @@ nav:
   - 'Optional Settings': optional_settings.md
   - 'How to Expand': downloader_pipeline.md
   - 'Best Practices': best_practices.md
-  #- 'FAQ': faq.md
+  - 'FAQ': faq.md
   #- 'API ⏏': api/index.html
   - 'Change Logs': change_logs.md
   - 'Contributing': contributing.md
