@@ -38,10 +38,11 @@ nav:
   - 'Getting Started': getting_started.md
   - 'For Android': for_android.md
   - 'Optional Settings': optional_settings.md
-  - 'Extending the downloader Pipeline': downloader_pipeline.md
+  - 'How to Expand': downloader_pipeline.md
+  - 'Best Practices': best_practices.md
   - 'FAQ': faq.md
   - 'API ⏏': api/index.html
-  - 'Change Log': changelog.md
+  - 'Change Logs': change_logs.md
   - 'Contributing': contributing.md
 
 # CSS
