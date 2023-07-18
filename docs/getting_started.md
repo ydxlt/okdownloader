@@ -86,6 +86,23 @@ call.cancelSafely()
 
 The difference between `cancel` and `cancelSafely` is that `cancelSafely()` will delete the downloaded temporary file.
 
+
+Canceling all download tasks
+----------------------------
+
+```kotlin
+downloader.cancelAll()
+```
+
+or
+
+```kotlin
+downloader.cancelAllSafely()
+```
+
+`cancelAllSafely` will delete the downloaded temporary files, including the breakpoint file. The next download will start from scratch.
+
+
 File Verification
 -----------------
 
@@ -151,11 +168,11 @@ In addition to task callbacks, task subscription is supported:
 ```kotlin
 val subscriber = object : Download.Subscriber {
     override fun onSuccess(call: Download.Call, response: Download.Response) {
-        // Do your job
+        // do your job
     }
 
     override fun onFailure(call: Download.Call, response: Download.Response) {
-        // Do your job
+        // do your job
     }
 }
 downloader.subscribe(subscriber)
