@@ -2,22 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://ydxlt.github.io/okdownloader/</loc>
-         <lastmod>2023-07-17</lastmod>
+         <lastmod>2023-07-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://ydxlt.github.io/okdownloader/best_practices/</loc>
+         <lastmod>2023-07-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://ydxlt.github.io/okdownloader/change_logs/</loc>
+         <lastmod>2023-07-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://ydxlt.github.io/okdownloader/contributing/</loc>
+         <lastmod>2023-07-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://ydxlt.github.io/okdownloader/downloader_pipeline/</loc>
+         <lastmod>2023-07-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ydxlt.github.io/okdownloader/for_android/</loc>
-         <lastmod>2023-07-17</lastmod>
+         <lastmod>2023-07-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ydxlt.github.io/okdownloader/getting_started/</loc>
-         <lastmod>2023-07-17</lastmod>
+         <lastmod>2023-07-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://ydxlt.github.io/okdownloader/optional_settings/</loc>
-         <lastmod>2023-07-17</lastmod>
+         <lastmod>2023-07-18</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
