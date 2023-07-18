@@ -6,7 +6,7 @@ Managing Downloader Objects
 
 Build and maintain a singleton downloader object to facilitate centralized management of download tasks. Different instances of the downloader have different download pools.
 
-In Android with 🫴Hilt
+In Android 🫴Hilt
 
 ```kotlin
 @Module
@@ -33,13 +33,13 @@ val downloader = Downloader.Builder().build()
 Business 1
 
 ```kotlin
-val downloaderForBiz1 = downloader.newBuilder()
+val downloaderForBiz1 = downloader.newBuilder().build()
 ```
 
 Business 2
 
 ```kotlin
-val downloaderForBiz2 = downloader.newBuilder()
+val downloaderForBiz2 = downloader.newBuilder().build()
 ```
 
 Using in Coroutines
