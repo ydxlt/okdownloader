@@ -1,8 +1,8 @@
 # How to Expand
 
-Dynamically add interceptors
+Add interceptors through code
 
-```java
+```kotlin
 val downloader = Downloader.Builder()
     .addInterceptor(CustomInterceptor())
     .build()
@@ -10,9 +10,9 @@ val downloader = Downloader.Builder()
 
 or
 
-Declare your interceptors using SPI,In META-INF/services/com.billbook.lib.Interceptor
+Declare your interceptors in `META-INF/services/com.billbook.lib.Interceptor` using the `SPI` mechanism.
 
-```java
+```kotlin
 com.example.CustomInterceptor1
 com.example.CustomInterceptor2
 com.example.CustomInterceptor3
