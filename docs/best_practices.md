@@ -24,7 +24,7 @@ class AppModule {
 }
 ```
 
-If you want to manage tasks for different business purposes within your app, you can initialize a downloader and create new downloaders using the newBuilder method of the downloader. This allows the new downloaders to have different download pools while reusing thread pools and other resources.
+If you want to manage tasks for different business purposes within your app, you can initialize a downloader and create new downloaders using the `newBuilder` method of the downloader. This allows the new downloaders to have different download pools while reusing thread pools and other resources.
 
 ```kotlin
 val downloader = Downloader.Builder().build()
