@@ -65,7 +65,7 @@ Cancel download
 call.cancel() // or call.cancelSafely()
 ```
 
-Check out OkDownloader's full documentation [here](documentation-link).
+Check out OkDownloader's [full documentation here](https://ydxlt.github.io/okdownloader/).
 
 How to Expand
 -------------

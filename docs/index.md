@@ -1,12 +1,12 @@
 OkDownloader
 ============
 
-A downloader base on OkHttp for Java and Android.
+A cross-platform downloader library for Java and Android based on OkHttp.
 
-- Easy to use: API like OkHttp
-- Many features: support many scenes, such as synchronous/asynchronous download, you can use it easy in coroutines
-- Modern: OkDownloader is Kotlin-first and base on OkHttp
-- Easy to expand: support SPI and dynomic Interceptor to expand
+* Easy to use: Simple API similar to OkHttp.
+* Rich in features: Supports synchronous/asynchronous downloads, network restrictions, multithreading, task priorities, resource verification, and more.
+* Modern: Written in Kotlin and based on OkHttp.
+* Easy to extend: Supports adding interceptors through code and provides extension through the `SPI` mechanism.
 
 Download
 --------
@@ -20,7 +20,7 @@ implementation("com.billbook.lib:downloader:1.0.0")
 Quick Start
 -----------
 
-Build a downloader just like build OkHttpClient
+Build a downloader instance just like building an OkHttpClient.
 
 ```kotlin
 val downloader = Downloader.Builder().build()
@@ -44,7 +44,7 @@ or
 call.enqueue() // Asynchronous download
 ```
 
-with callback
+Add callback listeners
 
 ```kotlin
 call.enqueue(object : Download.Callback {
@@ -65,12 +65,14 @@ Cancel download
 call.cancel() // or call.cancelSafely()
 ```
 
-How to expand
+Check out OkDownloader's full documentation [here](documentation-link).
+
+How to Expand
 -------------
 
-Dynamically add interceptors
+Add interceptors through code
 
-```java
+```kotlin
 val downloader = Downloader.Builder()
     .addInterceptor(CustomInterceptor())
     .build()
@@ -78,9 +80,9 @@ val downloader = Downloader.Builder()
 
 or
 
-Declare your interceptors using SPI,In META-INF/services/com.billbook.lib.Interceptor
+Declare your interceptors in `META-INF/services/com.billbook.lib.Interceptor` using the `SPI` mechanism.
 
-```java
+```kotlin
 com.example.CustomInterceptor1
 com.example.CustomInterceptor2
 com.example.CustomInterceptor3
@@ -89,22 +91,23 @@ com.example.CustomInterceptor3
 R8/Proguard
 -----------
 
-OkDownloader is fully compatible with R8 out of the box and doesn't require adding any extra rules.
-If you use Proguard, you may need to add rules for [OkHttp](https://github.com/square/okhttp/blob/master/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro) and [Okio](https://github.com/square/okio/blob/master/okio/src/jvmMain/resources/META-INF/proguard/okio.pro).
+OkDownloader is fully compatible with R8 out of the box and doesn't require adding any extra rules. If you use Proguard, you may need to add rules for [OkHttp](https://github.com/square/okhttp/blob/master/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro) and [Okio](https://github.com/square/okio/blob/master/okio/src/jvmMain/resources/META-INF/proguard/okio.pro).
 
 License
 =======
 
-    Copyright 2023 Billbook, Inc.
+```
+Copyright 2023 Billbook, Inc.
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
