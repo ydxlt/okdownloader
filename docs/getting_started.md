@@ -15,7 +15,7 @@ val call = downloader.newCall(request)
 call.enqueue()
 ```
 
-Add callback listeners:
+Add callback listeners
 
 ```kotlin
 call.enqueue(object : Download.Callback {
