@@ -14,7 +14,7 @@ Download
 OkDownloader is available on `mavenCentral()`.
 
 ```kotlin
-implementation("com.billbook.lib:downloader:1.0.0")
+implementation("io.github.ydxlt:okdownloader:1.0.0")
 ```
 
 Quick Start

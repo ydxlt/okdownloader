@@ -4,7 +4,7 @@ In Android
 In Android, you can add the following dependency
 
 ```kotlin
-implementation("com.billbook.lib:okdownloader-android:1.0.0")
+implementation("io.github.ydxlt:okdownloader-android:1.0.0")
 ```
 
 To add a copy interceptor that records download tasks and prioritizes copying for subsequent downloads of the same resource to `prevent duplicate downloads`, use the `CopyOnExists` mechanism:
