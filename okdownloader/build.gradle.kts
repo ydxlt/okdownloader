@@ -1,14 +1,8 @@
 plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
+    id("com.vanniktech.maven.publish")
 }
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-apply(from = "../maven_publish.gradle")
 
 dependencies {
     testImplementation(project(path = ":fakedata"))
