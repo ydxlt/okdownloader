@@ -1,18 +1,12 @@
 package com.billbook.lib.downloader
 
 import com.billbook.lib.downloader.internal.core.DefaultDownloadCall
-import com.billbook.lib.downloader.internal.core.DownloadPool
 import com.billbook.lib.downloader.internal.core.Dispatcher
-import com.billbook.lib.downloader.internal.util.CPU_COUNT
 import com.billbook.lib.downloader.internal.util.DefaultOkhttpClient
 import com.billbook.lib.downloader.internal.util.asFactory
 import okhttp3.OkHttpClient
 import okhttp3.internal.toImmutableList
 import java.util.*
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 
 class Downloader internal constructor(
     builder: Builder
@@ -27,20 +21,15 @@ class Downloader internal constructor(
     @get:JvmName("okHttpClientFactory")
     val okHttpClientFactory: Factory<OkHttpClient> = builder.okHttpClientFactory
 
-    @get:JvmName("executorService")
-    val executorService: ExecutorService = builder.executorService
-
-    @get:JvmName("executorService")
-    val idleCallback: Runnable? = builder.idleCallback
+    @get:JvmName("downloadPool")
+    val downloadPool: DownloadPool = builder.downloadPool ?: DownloadPool()
 
     @get:JvmName("interceptors")
     val interceptors: List<Interceptor> = builder.interceptors.toImmutableList()
 
-    internal val downloadPool = DownloadPool(executorService, idleCallback)
     internal val okhttpClient by lazy { builder.okHttpClientFactory.create() }
 
     private val dispatcher: Dispatcher = Dispatcher()
-
 
     fun newBuilder(): Builder {
         return Builder(this)
@@ -78,11 +67,7 @@ class Downloader internal constructor(
         internal var eventListenerFactory: EventListener.Factory = EventListener.NONE.asFactory()
         internal var defaultMaxRetry: Int = 3
         internal var okHttpClientFactory: Factory<OkHttpClient> = DefaultOkhttpClient.asFactory()
-        internal var executorService: ExecutorService = ThreadPoolExecutor(
-            CPU_COUNT, CPU_COUNT * 2, 5, TimeUnit.SECONDS,
-            LinkedBlockingQueue()
-        )
-        internal var idleCallback: Runnable? = null
+        internal var downloadPool: DownloadPool? = null
         internal var interceptors: MutableList<Interceptor> = mutableListOf()
 
         constructor()
@@ -91,8 +76,7 @@ class Downloader internal constructor(
             this.eventListenerFactory = downloader.eventListenerFactory
             this.defaultMaxRetry = downloader.defaultMaxRetry
             this.okHttpClientFactory = downloader.okHttpClientFactory
-            this.executorService = downloader.executorService
-            this.idleCallback = downloader.idleCallback
+            this.downloadPool = downloader.downloadPool.copy()
             this.interceptors = downloader.interceptors.toMutableList()
         }
 
@@ -108,12 +92,8 @@ class Downloader internal constructor(
             this.okHttpClientFactory = factory
         }
 
-        fun executorService(executorService: ExecutorService): Builder = apply {
-            this.executorService = executorService
-        }
-
-        fun idleCallback(idleCallback: Runnable): Builder = apply {
-            this.idleCallback = idleCallback
+        fun downloadPool(downloadPool: DownloadPool): Builder = apply {
+            this.downloadPool = downloadPool
         }
 
         fun addInterceptor(interceptor: Interceptor): Builder = apply {
@@ -146,49 +126,15 @@ class Downloader internal constructor(
     private class CallbackWrapper(
         private val callback: Download.Callback,
         private val subscriber: Download.Subscriber,
-    ) : Download.Callback {
-
-        override fun onStart(call: Download.Call) {
-            call.request.callbackExecutor.execute {
-                callback.onStart(call)
-            }
-        }
-
-        override fun onLoading(call: Download.Call, currentLength: Long, total: Long) {
-            call.request.callbackExecutor.execute {
-                callback.onLoading(call, currentLength, total)
-            }
-        }
-
-        override fun onChecking(call: Download.Call) {
-            call.request.callbackExecutor.execute {
-                callback.onChecking(call)
-            }
-        }
-
-        override fun onRetrying(call: Download.Call) {
-            call.request.callbackExecutor.execute {
-                callback.onRetrying(call)
-            }
-        }
-
-        override fun onCancel(call: Download.Call) {
-            call.request.callbackExecutor.execute {
-                callback.onCancel(call)
-            }
-        }
+    ) : Download.Callback by callback {
 
         override fun onSuccess(call: Download.Call, response: Download.Response) {
-            call.request.callbackExecutor.execute {
-                callback.onSuccess(call, response)
-            }
+            callback.onSuccess(call, response)
             subscriber.onSuccess(call, response)
         }
 
         override fun onFailure(call: Download.Call, response: Download.Response) {
-            call.request.callbackExecutor.execute {
-                callback.onFailure(call, response)
-            }
+            callback.onFailure(call, response)
             subscriber.onFailure(call, response)
         }
     }

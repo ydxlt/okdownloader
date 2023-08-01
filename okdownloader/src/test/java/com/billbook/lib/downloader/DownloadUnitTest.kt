@@ -229,4 +229,18 @@ class DownloadUnitTest {
         Assert.assertEquals(0, response.downloadLength)
         Assert.assertEquals(0, response.totalSize)
     }
+
+    @Test
+    fun download_pool_is_correct() {
+        val downloadPool = DownloadPool()
+        val downloader = Downloader.Builder().downloadPool(downloadPool).build()
+        val downloader2 = downloader.newBuilder().build()
+        val downloader3 = downloader.newBuilder().downloadPool(downloadPool).build()
+        val downloader4 = Downloader.Builder().downloadPool(downloadPool).build()
+        val downloader5 = Downloader.Builder().build()
+        Assert.assertFalse(downloader.downloadPool === downloader2.downloadPool)
+        Assert.assertSame(downloader.downloadPool, downloader3.downloadPool)
+        Assert.assertSame(downloader.downloadPool, downloader4.downloadPool)
+        Assert.assertFalse(downloader.downloadPool === downloader5.downloadPool)
+    }
 }

@@ -1,13 +1,19 @@
-package com.billbook.lib.downloader.internal.core
+package com.billbook.lib.downloader
 
-import com.billbook.lib.downloader.Download
-import com.billbook.lib.downloader.EventListener
+import com.billbook.lib.downloader.internal.core.DefaultDownloadCall
+import com.billbook.lib.downloader.internal.util.CPU_COUNT
 import java.util.*
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
-internal class DownloadPool(
-    private val executorService: ExecutorService,
-    private val idleCallback: Runnable?
+class DownloadPool(
+    private val executorService: ExecutorService = ThreadPoolExecutor(
+        CPU_COUNT, CPU_COUNT * 2, 5, TimeUnit.SECONDS,
+        LinkedBlockingQueue()
+    ),
+    private val idleCallback: Runnable? = null
 ) {
 
     private val readyAsyncCalls = PriorityQueue<DefaultDownloadCall.AsyncCall>()
@@ -24,6 +30,8 @@ internal class DownloadPool(
             promoteAndExecute()
         }
 
+    internal fun copy() = DownloadPool(this.executorService, null)
+
     @Synchronized
     internal fun executed(call: Download.Call, eventListener: EventListener) {
         if (findHitCall(call) != null) {
@@ -32,7 +40,7 @@ internal class DownloadPool(
         runningSyncCalls.add(call)
     }
 
-    fun enqueue(call: DefaultDownloadCall.AsyncCall, eventListener: EventListener) {
+    internal fun enqueue(call: DefaultDownloadCall.AsyncCall, eventListener: EventListener) {
         if (findHitCall(call.call) != null) {
             eventListener.callHit(call.call)
         }
@@ -91,22 +99,22 @@ internal class DownloadPool(
     @Synchronized
     fun runningCallsCount(): Int = runningAsyncCalls.size + runningSyncCalls.size
 
-    fun finished(call: Download.Call) {
+    internal fun finished(call: Download.Call) {
         finished(runningSyncCalls, call)
     }
 
-    fun finished(call: DefaultDownloadCall.AsyncCall) {
+    internal fun finished(call: DefaultDownloadCall.AsyncCall) {
         finished(runningAsyncCalls, call)
     }
 
     @Synchronized
-    fun cancelAll() {
+    internal fun cancelAll() {
         runningAsyncCalls.forEach { it.call.cancel() }
         runningSyncCalls.forEach { it.cancel() }
     }
 
     @Synchronized
-    fun cancelAllSafely() {
+    internal fun cancelAllSafely() {
         runningAsyncCalls.forEach { it.call.cancelSafely() }
         runningSyncCalls.forEach { it.cancelSafely() }
     }

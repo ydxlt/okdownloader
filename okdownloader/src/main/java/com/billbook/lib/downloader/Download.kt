@@ -1,10 +1,7 @@
 package com.billbook.lib.downloader
 
 import com.billbook.lib.downloader.internal.util.requireNotNullOrEmpty
-import okhttp3.HttpUrl
 import java.io.File
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 
 interface Download {
 
@@ -15,7 +12,6 @@ interface Download {
         @get:JvmName("tag") val tag: String?,
         @get:JvmName("size") val size: Long?,
         @get:JvmName("retry") val retry: Int?,
-        @get:JvmName("callbackExecutor") val callbackExecutor: CallbackExecutor,
         @get:JvmName("priority") val priority: Priority,
     ) {
 
@@ -26,7 +22,7 @@ interface Download {
         open fun destFile(): File = File(path)
 
         override fun toString(): String {
-            return "Request(url='$url', path='$path', md5=$md5, tag=$tag, size=$size, retry=$retry, callbackExecutor=$callbackExecutor, priority=$priority)"
+            return "Request(url='$url', path='$path', md5=$md5, tag=$tag, size=$size, retry=$retry, priority=$priority)"
         }
 
         open class Builder {
@@ -36,7 +32,6 @@ interface Download {
             protected var tag: String? = null
             protected var size: Long? = null
             protected var retry: Int? = null
-            protected var callbackExecutor: CallbackExecutor = CallbackExecutor.UNCONFINED
             protected var priority: Priority = Priority.MIDDLE
 
             constructor()
@@ -47,7 +42,6 @@ interface Download {
                 this.md5 = request.md5
                 this.tag = request.tag
                 this.size = request.size
-                this.callbackExecutor = request.callbackExecutor
                 this.priority = request.priority
             }
 
@@ -83,10 +77,6 @@ interface Download {
                 this.priority = priority
             }
 
-            open fun callbackOn(executor: CallbackExecutor): Builder = apply {
-                this.callbackExecutor = callbackExecutor
-            }
-
             open fun build(): Request {
                 return Request(
                     url = requireNotNullOrEmpty(url) { "Missing url!" },
@@ -94,7 +84,6 @@ interface Download {
                     md5 = md5,
                     size = size,
                     retry = retry,
-                    callbackExecutor = callbackExecutor,
                     tag = tag,
                     priority = priority
                 )
@@ -229,32 +218,5 @@ interface Download {
     interface Subscriber {
         fun onSuccess(call: Call, response: Response) {}
         fun onFailure(call: Call, response: Response) {}
-    }
-}
-
-interface Named {
-    val name: String
-}
-
-interface CallbackExecutor : Executor, Named {
-
-    companion object {
-        val UNCONFINED = object : CallbackExecutor {
-            override val name: String get() = "UNCONFINED"
-
-            override fun execute(command: Runnable) {
-                command.run()
-            }
-        }
-
-        val SERIAL = object : CallbackExecutor {
-            override val name: String get() = "SERIAL"
-
-            private val executor by lazy { Executors.newSingleThreadExecutor() }
-
-            override fun execute(command: Runnable) {
-                executor.execute(command)
-            }
-        }
     }
 }
